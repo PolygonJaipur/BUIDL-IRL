@@ -43,6 +43,13 @@ contract BuidlNFT is ERC721, ERC721URIStorage {
         _setTokenURI(tokenId, uri);
     }
 
+    /// Function to trasfer the NFT
+    /// @param to Receiver address
+    /// @param tokenId Token Id of the NFT
+    function transfer(address to, uint256 tokenId) external {
+        safeTransferFrom(msg.sender, to, tokenId);
+    }
+
     // The following functions are overrides required by Solidity.
 
     function _burn(
