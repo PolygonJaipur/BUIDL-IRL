@@ -329,4 +329,9 @@ main().catch((error) => {
 
 - Run `npx hardhat run scripts/deploy.js --network mumbai` to deploy and verify the contract on the Mumbai Testnet.
 
+In this script we are deploying the smart contract and verifying it on the Mumbai Testnet. We are using `ethers` to interact with the smart contract and `hre` to verify the smart contract.
+From `ethers` we are getting the **signer** and then we are getting the **contract factory**. We are using the **_contract factory to deploy the smart contract_**. After the contract is deployed we are getting the address of the contract and printing it.
+We are using `sleep` function to wait for the contract to be deployed on the Mumbai Testnet, it is used because the contract is not deployed immediately after the transaction is mined. The contract is deployed after some time.
+After that we are using `hre` to **verify** the smart contract. We are passing the address of the contract and the **constructor arguments** to the `verify` function.
+
 > So you have successfully deployed and verified your smart contract on Polygon Mumbai Testnet.
