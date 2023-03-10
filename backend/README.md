@@ -116,6 +116,15 @@ function safeMint(address to, string memory uri) public onlyOwner {
 
 This function takes an address and the token URI as parameters. The `to` is the adddress the NFT is minted to and the `uri` is the link to the metadata of the NFT. Before executing anything this function will parameters will pass to the modifier `onlyOwner` as required to check whether the conditions are met or not. If the conditions are met the function get executed else it will be reverted with error. The function will first get the current tokenId from the `_tokenIdCounter` and then increment it. Then it will mint the NFT to the address passed as a parameter and set the token URI of the NFT. The `_safeMint` function is used to mint the NFT and the `_setTokenURI` function is used to set the token URI of the NFT.
 
+- Let's write the function to transfer NFT
+
+````solidity
+function transfer(address to, uint256 tokenId) external {
+        safeTransferFrom(msg.sender, to, tokenId);
+    }
+```
+This function is to transfer the NFT from one address to another. It takes the address of the receiver and the tokenId of the NFT as parameters. The `safeTransferFrom` function is provided by the `ERC721` contract and is used to transfer the NFT from one address to another. The `msg.sender` is used to get the address of the caller of the function.
+
 - Let's write the overrides functions
 
 ```solidity
@@ -132,7 +141,7 @@ This function takes an address and the token URI as parameters. The `to` is the 
     }
 
 
-```
+````
 
 These override functions are required by the solidity compiler to work properly. The `_burn` function is used to burn the NFT and the `tokenURI` function is used to get the token URI of the NFT. We are overriding these functions to use the functions of the `ERC721URIStorage` contract. The `super` keyword is used to call the functions of the parent contract.
 
@@ -140,8 +149,52 @@ These override functions are required by the solidity compiler to work properly.
 
 #### 3. Testing the Smart Contract
 
-- Delete the `Lock.js` file from **test** folder and create new file named `mint.js`
-- Paste the following code in the file
+- Delete the `Lock.js` file from **test** folder
+
+##### 1. Deploying the Smart Contract
+
+- Create new file named `deploy.js` and paste the following code in the file
+
+```javascript
+const hre = require("hardhat");
+const { expect } = require("chai");
+
+describe("NFT Collection Deployment", function () {
+  it("Should deploy the NFT Contract", async function () {
+    const [owner, user1] = await hre.ethers.getSigners();
+
+    const NFT = await ethers.getContractFactory("BuidlNFT");
+    const nft = await NFT.deploy("BuidlNFT", "BN");
+    await nft.deployed().then((val) => {
+      console.log("NFT Contract Deployed");
+      console.log("Contract Address: " + nft.address);
+    });
+
+    expect(await nft.name()).to.equal("BuidlNFT");
+    expect(await nft.symbol()).to.equal("BN");
+  });
+
+  it("Should not deploy the NFT Contract", async function () {
+    const [owner, user1] = await hre.ethers.getSigners();
+
+    const NFT = await ethers.getContractFactory("BuidlNFT");
+    expect(NFT.deploy("BuidlNFT")).to.be.revertedWith("ERROR");
+  });
+});
+```
+
+- Run `npx hardhat test test/deploy.js` to run the script.
+
+This test is to check if the contract is deployed properly or not.
+
+- In the first case
+  We are checking the name and symbol of the NFT to check if the contract is deployed properly. We are also checking if the contract is deployed with the correct name and symbol.
+- In the second case
+  We are checking if the function is reverted with the correct error message. We are expecting the function to be reverted with the error message `ERROR`.
+
+##### 2. Minting the NFT
+
+- Create new file named `mint.js` and paste the following code in the file
 
 ```javascript
 const hre = require("hardhat");
@@ -171,6 +224,61 @@ describe("NFT Collection", function () {
 ```
 
 - Run `npx hardhat test test/mint.js` to test the code.
+
+This is a simple test to check if the NFT is minted or not. We are using the `loadFixture` function to load the fixture. The fixture is a function that returns the objects that we want to use in our tests. We are using the `expect` function to check if the NFT is minted or not. The `expect` function is provided by the `chai` library. We are using the `revertedWith` function to check if the function is reverted or not. The `revertedWith` function is provided by the `hardhat` library.
+
+- In the first test case we are checking if the NFT is minted or not.
+- In the second test case we are checking if the function is reverted or not.
+
+##### 3. Trasnsfering the NFT
+
+- Create a new file named `transfer.js` and paste the following code in the file
+
+```javascript
+const hre = require("hardhat");
+const { expect } = require("chai");
+const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
+describe("NFT Collection Transfer", function () {
+  async function fixture() {
+    const [owner, user1, user2] = await hre.ethers.getSigners();
+    const NFT = await ethers.getContractFactory("BuidlNFT");
+    const nft = await NFT.deploy("BuidlNFT", "BN");
+    await nft.deployed();
+
+    await nft
+      .connect(owner)
+      .safeMint(user1.address, "")
+      .then((val) => {
+        console.log("NFT Minted");
+      });
+
+    return { owner, user1, user2, nft };
+  }
+
+  it("Should transfer the NFT", async function () {
+    const { user1, user2, nft } = await loadFixture(fixture);
+
+    await nft.connect(user1).transfer(user2.address, 0);
+    expect(await nft.balanceOf(user1.address)).to.equal(0);
+    expect(await nft.balanceOf(user2.address)).to.equal(1);
+  });
+
+  it("Should not transfer the NFT", async function () {
+    const { user1, user2, nft } = await loadFixture(fixture);
+
+    expect(nft.connect(user2).transfer(user1.address, 0)).to.be.revertedWith(
+      "ERC721: transfer caller is not owner nor approved"
+    );
+  });
+});
+```
+
+- Run `npx hardhat test test/transfer.js` to test the code.
+
+This test is to check if the NFT is transferred or not.
+
+- In the first test case we are checking if the NFT is transferred or not.
+- In the second test case we are checking if the function is reverted or not.
 
 > So you have successfully written and tested your smart contract.
 
