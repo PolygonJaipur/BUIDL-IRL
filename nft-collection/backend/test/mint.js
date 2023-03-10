@@ -1,7 +1,7 @@
 const hre = require("hardhat");
 const { expect } = require("chai");
 const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
-describe("NFT Collection", function () {
+describe("NFT Collection Minting", function () {
 
     async function fixture() {
         const [owner, user1] = await hre.ethers.getSigners();
@@ -18,7 +18,7 @@ describe("NFT Collection", function () {
 
     it("Should not mint the NFT", async function () {
         const { owner, user1, nft } = await loadFixture(fixture);
-        expect(await nft.connect(user1).safeMint(user1.address, "")).to.be.revertedWith("ERR:NO");
+        expect(nft.connect(user1).safeMint(user1.address, "")).to.be.revertedWith("ERR:NO");
 
     }
     );
