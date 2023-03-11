@@ -1,5 +1,5 @@
 require("@nomicfoundation/hardhat-toolbox");
-require("dotenv").config({ path: ".env" });
+require("dotenv").config();
 
 const ALCHEMY_HTTP_URL = process.env.ALCHEMY_HTTP_URL;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;

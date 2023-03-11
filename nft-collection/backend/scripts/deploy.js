@@ -10,14 +10,10 @@ async function main() {
         const nft = await NFT.deploy("BuidlNFT", "BN");
         await nft.deployed();
         console.log("Contract address:", nft.address);
-    } catch (error) {
-        console.error(error);
-    }
 
-    console.log("Sleeping.....");
-    await sleep(40000);
+        console.log("Sleeping.....");
+        await sleep(40000);
 
-    try {
         await hre.run("verify:verify", {
             address: nft.address,
             constructorArguments: ["BuidlNFT", "BN"],
