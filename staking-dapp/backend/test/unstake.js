@@ -38,21 +38,17 @@ describe("Unstaking Function", function () {
     it("Should unstake the NFT", async function () {
         const { user1, nftContract, tokenContract, stakingContract } = await loadFixture(fixture);
 
-        await time.increase(3600);
+        await time.increase((3600 * 24) + 1);
 
         const rewardAmount = await stakingContract.calculateReward(user1.address);
         console.log("Reward Amount: ", rewardAmount.toString());
-
-
-        // const rewardAmountAfter = await stakingContract.calculateReward(user1.address);
-        // console.log("Reward Amount After: ", rewardAmountAfter.toString());
 
         await stakingContract.connect(user1).unStakeNFT(0);
 
         expect(await nftContract.balanceOf(user1.address)).to.equal(1);
         expect(await nftContract.balanceOf(stakingContract.address)).to.equal(0);
         expect(await nftContract.ownerOf(0)).to.equal(user1.address);
-        // expect(await tokenContract.balanceOf(user1.address)).to.equal(rewardAmount);
+        expect(await tokenContract.balanceOf(user1.address)).to.gt(rewardAmount);
     });
 
 });
