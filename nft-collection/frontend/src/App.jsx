@@ -1,8 +1,7 @@
 import { Web3Button } from "@web3modal/react";
 import { useAccount, useDisconnect } from "wagmi";
 import { useEffect } from "react";
-
-const CONTRACT_ADDRESS = "0x8b7fbA9aD358EE10D37FC0ad6390C0FdF375B883";
+import NFT from "./NFT";
 
 export default function App() {
 	const { address, isConnected } = useAccount();
@@ -33,7 +32,7 @@ export default function App() {
 				</div>
 			</nav>
 			<div className="container">
-				<Web3Button />
+				{isConnected ? <NFT /> : <Web3Button />}
 			</div>
 		</div>
 	);
