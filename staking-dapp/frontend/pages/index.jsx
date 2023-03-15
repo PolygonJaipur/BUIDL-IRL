@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useAccount, useContract, useSigner } from "wagmi";
+import { useAccount } from "wagmi";
 import TokenBal from "@/components/Modal/TokenBal";
 import StakedNft from "@/components/Modal/StakedNft";
 import UnstakedNft from "@/components/Modal/UnstakedNft";
