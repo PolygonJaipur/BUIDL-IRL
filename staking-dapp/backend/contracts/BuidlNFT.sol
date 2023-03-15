@@ -6,6 +6,9 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
+/// @title BuidlNFT Contract
+/// @author Megabyte
+/// @notice This contract is used to mint NFTs and transfer them.
 contract BuidlNFT is ERC721, ERC721URIStorage, ERC721Enumerable {
     using Counters for Counters.Counter;
 
