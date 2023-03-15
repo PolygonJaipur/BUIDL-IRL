@@ -6,5 +6,5 @@
 
 ### Contract
 
-- **ADDRESS** => 0xAD05171D0747Bf27F4311f86bAbe3409CB968c50
-- [CODE](https://mumbai.polygonscan.com/address/0xAD05171D0747Bf27F4311f86bAbe3409CB968c50#code)
+- **ADDRESS** => 0x7Cf1f0aE8FDA13980aa0104Daf9b2cF307762831
+- [CODE](https://mumbai.polygonscan.com/address/0x7Cf1f0aE8FDA13980aa0104Daf9b2cF307762831#code)
