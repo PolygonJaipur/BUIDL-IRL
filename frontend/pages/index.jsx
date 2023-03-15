@@ -11,7 +11,12 @@ export default function Home() {
       </Head>
       <main>
         <div className="flex justify-center">
-          <section className="px-5 border rounded-lg my-20 shadow-lg bg-[#0000009d]"></section>
+          <section className="px-5 border rounded-lg my-20 shadow-lg bg-[#0000009d]">
+            <h2 className="text-5xl text-center p-7">
+              GM GM GM ! <br />
+              🎆 Welcome to BUIDL Day-2 🎆
+            </h2>
+          </section>
         </div>
       </main>
     </>
