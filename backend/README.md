@@ -1,12 +1,12 @@
 # BUIDL-IRL
 
-## NFT COLLECTION
+# NFT COLLECTION
 
-### What are we going to build?
+## What are we going to build?
 
 In this tutorial we will be building an NFT collection on Polygon Mumbai Testnet.
 
-### Tech Stack Used
+## Tech Stack Used
 
 - NextJS
 - Solidity
@@ -14,7 +14,7 @@ In this tutorial we will be building an NFT collection on Polygon Mumbai Testnet
 - Ethers.js
 - Wallet Connect
 
-### Prerequisites
+## Prerequisites
 
 - [Metamask Installed as extension in your Browser](https://www.geeksforgeeks.org/how-to-install-and-use-metamask-on-google-chrome/)
 
@@ -24,9 +24,9 @@ In this tutorial we will be building an NFT collection on Polygon Mumbai Testnet
 
 - [Install VS CODE](https://code.visualstudio.com/docs/setup/windows)or Any other IDE
 
-### Let's start building
+## Let's start building
 
-#### 1. Setting up the project
+### 1. Setting up the project
 
 - Open your terminal and run the following commands
   - `git clone https://github.com/PolygonJaipur/BUIDL-IRL.git`
@@ -44,9 +44,41 @@ In this tutorial we will be building an NFT collection on Polygon Mumbai Testnet
   - Go to [Polygon Scan](https://polygonscan.com/myapikey), sign in and then create an API Key. After that paste it like this:
     `POLYGON_SCAN_KEY= Your Polygon Scan Key`
 
+    - Go to `hardhat.config.js` and paste the following code in it:
+
+```javascript
+require("@nomicfoundation/hardhat-toolbox");
+require("dotenv").config();
+
+const ALCHEMY_HTTP_URL = process.env.ALCHEMY_HTTP_URL;
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const POLYGON_SCAN_KEY = process.env.POLYGON_SCAN_KEY;
+
+module.exports = {
+  solidity: "0.8.18",
+  networks: {
+    mumbai: {
+      url: ALCHEMY_HTTP_URL,
+      accounts: [PRIVATE_KEY],
+    },
+  },
+  etherscan: {
+    apiKey: {
+      polygonMumbai: POLYGON_SCAN_KEY,
+    },
+  },
+};
+```
+
+Here we are importing the `hardhat-toolbox` which will help us to deploy our contract on Polygon Mumbai Testnet. We are also importing the `dotenv` which will help us to import the environment variables from the `.env` file. We are also importing the `ALCHEMY_HTTP_URL`, `PRIVATE_KEY` and `POLYGON_SCAN_KEY` from the `.env` file. We are also specifying the `solidity` version and the `networks` we are going to use. We are also specifying the `etherscan` API key for verifying the contract on Polygon Scan.
+
 > So our development environment is ready!!!
 
-#### 2. Writing the Smart Contract
+---
+
+---
+
+### 2. Writing the Smart Contract
 
 - Delete the file `Lock.sol` in contract folder. And create new file `BuidlNFT.sol`
 - Intiate the file with the imports required by our NFT Collection.
@@ -147,11 +179,15 @@ These override functions are required by the solidity compiler to work properly.
 
 > So we have written our contract.
 
-#### 3. Testing the Smart Contract
+---
+
+---
+
+### 3. Testing the Smart Contract
 
 - Delete the `Lock.js` file from **test** folder
 
-##### 1. Deploying the Smart Contract
+#### 1. Deploying the Smart Contract
 
 - Create new file named `deploy.js` and paste the following code in the file
 
@@ -192,7 +228,7 @@ This test is to check if the contract is deployed properly or not.
 - In the second case
   We are checking if the function is reverted with the correct error message. We are expecting the function to be reverted with the error message `ERROR`.
 
-##### 2. Minting the NFT
+#### 2. Minting the NFT
 
 - Create new file named `mint.js` and paste the following code in the file
 
@@ -230,7 +266,7 @@ This is a simple test to check if the NFT is minted or not. We are using the `lo
 - In the first test case we are checking if the NFT is minted or not.
 - In the second test case we are checking if the function is reverted or not.
 
-##### 3. Trasnsfering the NFT
+#### 3. Trasnsfering the NFT
 
 - Create a new file named `transfer.js` and paste the following code in the file
 
@@ -282,7 +318,11 @@ This test is to check if the NFT is transferred or not.
 
 > So you have successfully written and tested your smart contract.
 
-#### 4. Deploying and Verifying the Smart Contract
+---
+
+---
+
+### 4. Deploying and Verifying the Smart Contract
 
 - Delete the `Lock.js` file from **scripts** folder and create new file named `deploy.js`
 - Paste the following code in the file
@@ -335,3 +375,9 @@ We are using `sleep` function to wait for the contract to be deployed on the Mum
 After that we are using `hre` to **verify** the smart contract. We are passing the address of the contract and the **constructor arguments** to the `verify` function.
 
 > So you have successfully deployed and verified your smart contract on Polygon Mumbai Testnet.
+
+---
+
+---
+
+---
