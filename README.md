@@ -26,3 +26,37 @@ Here are the following **dApps we will be building** in this workshop series:
 - [25th March] [Gasless Transactions dApp]
 - [26th March] [dApp with Polygon ID]
 - [1st April] [dApp on Polygon zkEVM]
+
+## How to use this repo?
+
+This is a monorepo containing complete guide to the dApps which we are going to build in the session. The sessions are planned in a chronological order to build a Full-Stack dApp at the end of the  whole workshop series. Therefore each workshop topic is a branch in itself which will be have the required code from the previous sessions and all you have to do is to follow the README.md of that branch to BUIDL.
+
+For Example=> 
+The `staking-dapp` will be preloaded with the code of NFT Staking since we will be using the same contract. All you have to do is checkout to the staking-dapp branch and then follow the code in the README. 
+
+
+## How to start?
+
+- Register for the series [here.](https://lu.ma/buidl-irl)
+
+- Give this repo a star ⭐️
+
+- Open your terminal and paste the following code:
+```
+git clone https://github.com/PolygonJaipur/BUIDL-IRL.git
+cd BUIDL-IRL
+```
+- Open the folder in your preferred IDE.
+So, right now you are in the `main` branch, so we need to shift to first lesson `nft-collection`
+
+- Open the same terminal and paste the following code:
+```
+git checkout nft-collection
+cd backend 
+yarn install
+``` 
+So, now you are in the first lesson NFT collection on the **nft-collection branch**, all dependencies installed and ready to **BUIDL**.
+
+- As you complete one by one you can shift to the next branch and complete the tutorials.
+
+## What you will get out of this. 
