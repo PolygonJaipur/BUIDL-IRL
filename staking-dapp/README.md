@@ -1,6 +1,6 @@
 # BUIDL-IRL
 
-## NFT COLLECTION
+## Staking dAPP
 
 ### Vercel Link
 
