@@ -1,6 +1,12 @@
 # BUIDL-IRL
 
-gm gm gm
+
+![1D13C407-7B37-4572-9B81-FD92C807A269](https://user-images.githubusercontent.com/79016290/225668652-832dd0e7-2aeb-412d-81ae-9ceceab56d00.GIF)
+
+_Created by [Ayush Mangal](https://twitter.com/0xayushM)_
+
+
+***gm gm gm**
 
 You are here to have **hands-on code practice** with the **Polygon Guild Jaipur.**
 
