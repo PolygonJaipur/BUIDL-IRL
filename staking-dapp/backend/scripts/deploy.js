@@ -21,9 +21,6 @@ async function main() {
         await staking.deployed();
         console.log("Staking Contract Address:", staking.address);
 
-        // console.log("Sleeping.....");
-        // await sleep(40000);
-
         await hre.run("verify:verify", {
             address: nft.address,
             constructorArguments: ["BuidlNFT", "BN"],
@@ -43,10 +40,6 @@ async function main() {
         console.error(error);
     }
 
-}
-
-function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 main().catch((error) => {
