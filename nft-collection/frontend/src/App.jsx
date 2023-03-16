@@ -17,6 +17,12 @@ export default function App() {
 		<div className="App">
 			<nav className="header">
 				<h1>BUIDL_IRL</h1>
+				{isConnected && <Web3Button />}
+			</nav>
+			<div className="container">
+				{isConnected ? <NFT /> : <Web3Button />}
+			</div>
+			<footer>
 				<div className="Logo__Container">
 					<img
 						className="Logo"
@@ -30,10 +36,7 @@ export default function App() {
 						alt="WalletConnect Logo"
 					/>
 				</div>
-			</nav>
-			<div className="container">
-				{isConnected ? <NFT /> : <Web3Button />}
-			</div>
+			</footer>
 		</div>
 	);
 }

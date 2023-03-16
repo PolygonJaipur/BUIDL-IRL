@@ -8,14 +8,14 @@ import {
 } from "@web3modal/ethereum";
 import { Web3Button, Web3Modal } from "@web3modal/react";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { mainnet, polygon } from "wagmi/chains";
+import { polygonMumbai } from "wagmi/chains";
 import "./index.css";
 
 // Define project id from cloud.walletconnect.com
 const projectId = "f19cac97ba60e7b23ce645d9a6e286f4";
 
 // Configure chains
-const chains = [mainnet, polygon];
+const chains = [polygonMumbai];
 
 // Configure wagmi client provider
 const { provider } = configureChains(chains, [w3mProvider({ projectId })]);

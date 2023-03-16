@@ -33,6 +33,10 @@ body {
 	place-items: center;
 }
 
+h2 {
+	color: hsl(260, 15%, 80%);
+}
+
 nav.header {
 	position: absolute;
 	top: 0;
@@ -41,6 +45,18 @@ nav.header {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	padding: 1rem 1.25rem;
+	font-weight: 500;
+}
+
+footer {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	padding: 1rem 1.25rem;
 	font-weight: 500;
 }
@@ -72,6 +88,8 @@ nav.header {
 	border-radius: 0.75rem;
 	padding: 1rem;
 	background: hsla(255, 18%, 7%, 0.75);
+	box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px,
+		rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
 }
 
 .File__Container {
@@ -92,7 +110,7 @@ nav.header {
 	justify-content: space-between;
 	color: hsl(260, 15%, 75%);
 	font-size: 0.875rem;
-	background: hsl(260, 15%, 15%);
+	background: hsl(260, 15%, 16%);
 	border-radius: 0 0 0.5rem 0.5rem;
 	font-weight: 500;
 }
@@ -106,6 +124,8 @@ nav.header {
 	font-weight: 400;
 	color: hsl(260, 21%, 78%);
 	width: 100%;
+	display: grid;
+	place-items: center;
 }
 
 .btn {
@@ -117,16 +137,25 @@ nav.header {
 	color: #eeeeee;
 	font-weight: 400;
 	margin-left: auto;
+	opacity: 1;
+	display: grid;
+	place-items: center;
 	transition: all 0.2s ease;
+	min-width: 6rem;
 }
 
-.btn:hover {
+.btn:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.btn:not(:disabled):hover {
 	background: hsl(262, 75%, 69%);
 	color: #fff;
 	transform: translateY(-2px);
 }
 
-.Input__Container {
+.Buttons__Container {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -134,7 +163,7 @@ nav.header {
 
 input::file-selector-button {
 	border: solid 2px hsla(260, 5%, 100%, 0.1);
-	margin-right: 1rem;
+	margin-right: 0.75rem;
 	background: transparent;
 	color: hsla(260, 5%, 90%, 0.66);
 	padding: 0.5rem 1rem;
@@ -142,4 +171,52 @@ input::file-selector-button {
 	border-radius: 0.75rem;
 	cursor: pointer;
 	font-weight: 400;
+}
+
+.Input__Container {
+	display: block;
+}
+
+.Input__Container label {
+	display: block;
+	color: hsla(260, 5%, 90%, 0.5);
+	font-size: 0.875rem;
+	font-weight: 500;
+	margin-bottom: 0.5rem;
+	text-transform: uppercase;
+}
+
+.Input__Container input[type="text"] {
+	border: solid 2px hsla(260, 5%, 100%, 0.1);
+	background: transparent;
+	color: hsla(260, 5%, 90%, 1);
+	padding: 0.5rem 1rem;
+	font-size: 1rem;
+	border-radius: 0.5rem;
+	font-weight: 400;
+	width: 100%;
+}
+
+.Input__Container input[type="text"]:focus-visible {
+	border: 2px solid hsl(262, 75%, 59%);
+	outline: none;
+}
+
+.Input__Container input[type="text"]::placeholder {
+	color: hsla(260, 5%, 90%, 0.33);
+}
+
+.Input__Container:not(:last-child) {
+	margin-bottom: 0.5rem;
+}
+
+.Input__Wrapper {
+	display: block;
+}
+
+.Divider {
+	width: calc(100% + 2rem);
+	height: 2px;
+	background: hsla(260, 5%, 100%, 0.03);
+	margin-left: -1rem;
 }
