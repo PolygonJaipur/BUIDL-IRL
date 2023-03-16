@@ -1,10 +1,10 @@
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { Web3Button } from "@web3modal/react";
 import React from "react";
 
 const Navbar = () => {
   return (
     <nav className="">
-      <ConnectButton />
+      <Web3Button />
     </nav>
   );
 };
