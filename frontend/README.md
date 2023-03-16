@@ -12,7 +12,7 @@ In this tutorial we will be integarting NFT staking contract with NextJs.
 - NextJS
 - Wagmi
 - Ethers.js
-- RainbowKit
+- WalletConnect
 - Tailwind CSS
 
 ### Prerequisites
@@ -23,7 +23,7 @@ In this tutorial we will be integarting NFT staking contract with NextJs.
 
 - [Wagmi](https://wagmi.sh)
 
-- [RainbowKit](https://www.rainbowkit.com/docs)
+- [Wallet Connect](https://walletconnect.com/)
 
 - [Knowledge of Git and GitHub](https://www.geeksforgeeks.org/ultimate-guide-git-github/?ref=gcse)
 
@@ -44,7 +44,11 @@ In this tutorial we will be integarting NFT staking contract with NextJs.
   - `yarn install`
   
 These commands in the same order will install all the dependencies for building.
-- Create `.env` file in the `frontend` directory.
+- Create `.env` file in the `frontend` directory. Get project Id from [here](https://cloud.walletconnect.com/sign-in)
+
+```
+NEXT_PUBLIC_WEB3_PROJECT_ID = "Your Web3 Project ID"
+```
 
 
 > So our development environment is ready 🚀🚀
@@ -56,30 +60,26 @@ These commands in the same order will install all the dependencies for building.
 - Create a new Wagmi client
 
 ```
-const { chains, provider } = configureChains(
-  [polygon, polygonMumbai],
-  // [alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY! }), publicProvider()]
-  [publicProvider()]
-);
-const { connectors } = getDefaultWallets({
-  appName: "My Staking Dpp",
-  chains,
-});
+const chains = [polygonMumbai];
+const projectId = process.env.NEXT_PUBLIC_WEB3_PROJECT_ID;
+
+const { provider } = configureChains(chains, [w3mProvider({ projectId })]);
 const wagmiClient = createClient({
   autoConnect: true,
-  connectors,
+  connectors: w3mConnectors({ projectId, version: 1, chains }),
   provider,
 });
-```
-
-- Wrap your components with wagmi and rainbowkit provider
+const ethereumClient = new EthereumClient(wagmiClient, chains);
 
 ```
-<WagmiConfig client={wagmiClient}>
-   <RainbowKitProvider chains={chains} modalSize="compact">
-      <Navbar />
-      <Component {...pageProps} />
-   </RainbowKitProvider>
+
+- Wrap your components with wagmi and walletconnect provider
+
+```
+ <WagmiConfig client={wagmiClient}>
+          <Navbar />
+          <Component {...pageProps} />
+          <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
 </WagmiConfig>
 ```
 > You have now succefully wrapped your app with wagmi and rainbow kit 
