@@ -49,6 +49,32 @@ nav.header {
 	font-weight: 500;
 }
 
+.Link__Container {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+.Link {
+	color: hsla(260, 15%, 75%, 0.6);
+	text-decoration: none;
+	transition: color 0.2s;
+}
+
+.Link:hover {
+	color: hsla(260, 15%, 95%, 0.6);
+}
+
+.Link--active {
+	text-decoration: none;
+	color: hsl(260, 15%, 95%);
+}
+
+.Link--pending {
+	text-decoration: none;
+	color: hsl(260, 5%, 63%);
+}
+
 footer {
 	position: absolute;
 	bottom: 0;

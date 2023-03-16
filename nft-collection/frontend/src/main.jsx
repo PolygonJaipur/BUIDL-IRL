@@ -9,6 +9,7 @@ import {
 import { Web3Button, Web3Modal } from "@web3modal/react";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { polygonMumbai } from "wagmi/chains";
+import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 
 // Define project id from cloud.walletconnect.com
@@ -32,16 +33,18 @@ const ethereumClient = new EthereumClient(wagmiClient, chains);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
 	<React.StrictMode>
-		<WagmiConfig client={wagmiClient}>
-			<App />
-			<Web3Modal
-				themeVariables={{
-					"--w3m-accent-color": "#8247e5",
-					"--w3m-background-color": "#8247e5",
-				}}
-				projectId={projectId}
-				ethereumClient={ethereumClient}
-			/>
-		</WagmiConfig>
+		<BrowserRouter>
+			<WagmiConfig client={wagmiClient}>
+				<App />
+				<Web3Modal
+					themeVariables={{
+						"--w3m-accent-color": "#8247e5",
+						"--w3m-background-color": "#8247e5",
+					}}
+					projectId={projectId}
+					ethereumClient={ethereumClient}
+				/>
+			</WagmiConfig>
+		</BrowserRouter>
 	</React.StrictMode>
 );

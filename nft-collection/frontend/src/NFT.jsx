@@ -52,14 +52,21 @@ const NFT = () => {
 				const ipfsUrl = "ipfs://" + result.value.cid;
 				console.log("IPFS url:", ipfsUrl);
 				try {
-					const res = contract.safeMint(
-						address,
-						JSON.stringify({
-							name: title,
-							description,
-							image: ipfsUrl,
-						})
-					);
+					const res = contract
+						.safeMint(
+							address,
+							JSON.stringify({
+								name: title,
+								description,
+								image: ipfsUrl,
+							})
+						)
+						.then(res => {
+							console.log(
+								"Minted Successfully: https://mumbai.polygonscan.com/tx/" +
+									res.hash
+							);
+						});
 				} catch (e) {
 					console.log(e);
 				}
