@@ -58,6 +58,8 @@ yarn install
 
 So, now you are in the first lesson NFT collection on the **nft-collection branch**, all dependencies installed and ready to **BUIDL**.
 
+- Follow the **Readme.md** of the each branch.
+
 - As you complete one by one you can shift to the next branch and complete the tutorials.
 
 ## What you will get out of this?
