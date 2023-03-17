@@ -8,14 +8,14 @@ const CONTRACT_ADDRESS = "0xf8Ef6084E0734e0359D91C82D3D23194fC832dA0";
 const getCloudflareURL = url =>
 	`https://cloudflare-ipfs.com/ipfs/${url?.replace("ipfs://", "")}`;
 
-const SingleNFT = ({ data }) => {
+const SingleNFT = ({ data, ...props }) => {
 	const { name, description, image } = data;
 
 	const navigate = useNavigate();
 	const { id } = useParams();
 
 	const handleTransfer = () => {
-		navigate(`/transfer/${id}`);
+		id ? navigate(`/transfer/${id}`) : navigate(`/transfer/${props.id}`);
 	};
 
 	return (
@@ -138,6 +138,9 @@ const NFTComponent = ({ id }) => {
 const GalleryForUser = () => {
 	const navigate = useNavigate();
 	const { address } = useAccount();
+	const { data: signer } = useSigner();
+
+	const [nfts, setNfts] = useState([]);
 
 	const { data: supply } = useContractRead({
 		address: CONTRACT_ADDRESS,
@@ -145,15 +148,76 @@ const GalleryForUser = () => {
 		functionName: "totalSupply",
 	});
 
-	console.log(supply);
+	const contract = useContract({
+		address: CONTRACT_ADDRESS,
+		abi: ABI.abi,
+		signerOrProvider: signer,
+	});
+
+	useEffect(() => {
+		const getNFTs = async () => {
+			try {
+				const nfts = [];
+				for (let i = 0; i < supply.toNumber(); i++) {
+					const res = await contract?.ownerOf(i);
+					if (res.toLowerCase() === address.toLowerCase()) {
+						const uri = await contract?.getTokenURI(i);
+						const data = await fetch(getCloudflareURL(uri));
+						const json = await data.json();
+						const nft = { tokenId: i, ...json };
+						nfts.push(nft);
+					}
+				}
+				setNfts(nfts);
+			} catch (err) {
+				console.log(err);
+			}
+		};
+		getNFTs();
+	}, [address, contract, supply]);
 
 	return (
-		<div>
-			{address &&
-				`There are ${
-					supply && Number(BigInt(supply))
-				} NFT(s) in this contract`}
-		</div>
+		<>
+			{nfts.length > 0 ? (
+				<div className="Gallery__Wrapper">
+					{nfts.map(nft => (
+						<SingleNFT
+							data={nft}
+							id={nft.tokenId}
+							key={nft.tokenId}
+						/>
+					))}
+				</div>
+			) : (
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					xmlnsXlink="http://www.w3.org/1999/xlink"
+					width="24"
+					height="24"
+					viewBox="0 0 100 100"
+					preserveAspectRatio="xMidYMid"
+				>
+					<circle
+						cx="50"
+						cy="50"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="8"
+						r="35"
+						strokeDasharray="164.93361431346415 56.97787143782138"
+					>
+						<animateTransform
+							attributeName="transform"
+							type="rotate"
+							repeatCount="indefinite"
+							dur="1s"
+							values="0 50 50;360 50 50"
+							keyTimes="0;1"
+						></animateTransform>
+					</circle>
+				</svg>
+			)}
+		</>
 	);
 };
 
