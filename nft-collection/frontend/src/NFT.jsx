@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import ABI from "./contracts/ABI.json";
 import { useAccount, useContract, useSigner } from "wagmi";
+import { NFTStorage } from "nft.storage";
 
 const CONTRACT_ADDRESS = "0x8b7fbA9aD358EE10D37FC0ad6390C0FdF375B883";
 
@@ -23,6 +24,7 @@ const NFT = () => {
 
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
+	const client = new NFTStorage({ token: NFT_STORAGE_KEY });
 
 	const changeHandler = event => {
 		setSelectedFile(event.target.files[0]);
@@ -39,33 +41,24 @@ const NFT = () => {
 
 	const uploadFile = () => {
 		setIsMinting(true);
-		fetch("https://api.nft.storage/upload", {
-			method: "POST",
-			headers: {
-				Authorization: `Bearer ${NFT_STORAGE_KEY}`,
-				"Content-Type": "application/json",
-			},
-			body: selectedFile,
-		})
-			.then(response => response.json())
+		client
+			.store({
+				name: title,
+				description,
+				image: selectedFile,
+			})
 			.then(result => {
-				const ipfsUrl = "ipfs://" + result.value.cid;
+				const ipfsUrl = result.url;
 				console.log("IPFS url:", ipfsUrl);
 				try {
 					const res = contract
-						.safeMint(
-							address,
-							JSON.stringify({
-								name: title,
-								description,
-								image: ipfsUrl,
-							})
-						)
+						.safeMint(address, ipfsUrl)
 						.then(res => {
 							console.log(
 								"Minted Successfully: https://mumbai.polygonscan.com/tx/" +
 									res.hash
 							);
+							setIsMinting(false);
 						});
 				} catch (e) {
 					console.log(e);
@@ -73,8 +66,6 @@ const NFT = () => {
 			})
 			.catch(error => {
 				console.error("Error:", error);
-			})
-			.finally(() => {
 				setIsMinting(false);
 			});
 	};

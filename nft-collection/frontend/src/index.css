@@ -105,7 +105,7 @@ footer {
 }
 
 .NFT__Container {
-	width: 33%;
+	width: clamp(30px, 33%, 400px);
 	margin: 0 auto;
 	display: flex;
 	flex-direction: column;
