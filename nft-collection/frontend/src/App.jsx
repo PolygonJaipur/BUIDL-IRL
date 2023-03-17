@@ -36,20 +36,6 @@ export default function App() {
 						Create
 					</NavLink>
 					<NavLink
-						to="/transfer"
-						className={({ isActive, isPending }) =>
-							`Link${
-								isPending
-									? "--pending"
-									: isActive
-									? "--active"
-									: ""
-							}`
-						}
-					>
-						Transfer
-					</NavLink>
-					<NavLink
 						to="/gallery"
 						className={({ isActive, isPending }) =>
 							`Link${
@@ -70,8 +56,8 @@ export default function App() {
 				{isConnected ? (
 					<Routes>
 						<Route path="/" element={<NFT />} />
-						<Route path="gallery" element={<Gallery />} />
-						<Route path="transfer" element={<Transfer />} />
+						<Route path="gallery/:id?" element={<Gallery />} />
+						<Route path="transfer/:id" element={<Transfer />} />
 					</Routes>
 				) : (
 					<Web3Button />

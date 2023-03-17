@@ -3,7 +3,7 @@ import ABI from "./contracts/ABI.json";
 import { useAccount, useContract, useSigner } from "wagmi";
 import { NFTStorage } from "nft.storage";
 
-const CONTRACT_ADDRESS = "0x8b7fbA9aD358EE10D37FC0ad6390C0FdF375B883";
+const CONTRACT_ADDRESS = "0xf8Ef6084E0734e0359D91C82D3D23194fC832dA0";
 
 const NFT_STORAGE_KEY = import.meta.env.VITE_NFT_STORAGE_KEY;
 
@@ -14,7 +14,7 @@ const NFT = () => {
 
 	const { address } = useAccount();
 
-	const { data: signer, isError, isLoading } = useSigner();
+	const { data: signer } = useSigner();
 
 	const contract = useContract({
 		address: CONTRACT_ADDRESS,
@@ -51,15 +51,13 @@ const NFT = () => {
 				const ipfsUrl = result.url;
 				console.log("IPFS url:", ipfsUrl);
 				try {
-					const res = contract
-						.safeMint(address, ipfsUrl)
-						.then(res => {
-							console.log(
-								"Minted Successfully: https://mumbai.polygonscan.com/tx/" +
-									res.hash
-							);
-							setIsMinting(false);
-						});
+					contract.safeMint(address, ipfsUrl).then(res => {
+						console.log(
+							"Minted Successfully: https://mumbai.polygonscan.com/tx/" +
+								res.hash
+						);
+						setIsMinting(false);
+					});
 				} catch (e) {
 					console.log(e);
 				}
