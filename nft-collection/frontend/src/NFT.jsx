@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import ABI from "./contracts/ABI.json";
-import { useAccount, useContract, useSigner } from "wagmi";
+import { useAccount, useContract, useContractRead, useSigner } from "wagmi";
 import { NFTStorage } from "nft.storage";
+import { useNavigate } from "react-router-dom";
 
 const CONTRACT_ADDRESS = "0xf8Ef6084E0734e0359D91C82D3D23194fC832dA0";
 
@@ -11,6 +12,8 @@ const NFT = () => {
 	const [selectedFile, setSelectedFile] = useState();
 	const [isFilePicked, setIsFilePicked] = useState(false);
 	const [isMinting, setIsMinting] = useState(false);
+
+	const navigate = useNavigate();
 
 	const { address } = useAccount();
 
@@ -39,6 +42,12 @@ const NFT = () => {
 		setDescription(event.target.value);
 	};
 
+	const { data: supply } = useContractRead({
+		address: CONTRACT_ADDRESS,
+		abi: ABI.abi,
+		functionName: "totalSupply",
+	});
+
 	const uploadFile = () => {
 		setIsMinting(true);
 		client
@@ -57,6 +66,7 @@ const NFT = () => {
 								res.hash
 						);
 						setIsMinting(false);
+						navigate(`/gallery/${supply.toNumber()}`);
 					});
 				} catch (e) {
 					console.log(e);
