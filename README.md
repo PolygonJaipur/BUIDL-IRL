@@ -72,5 +72,20 @@ Here is the criteria for getting the SWAGS and Lens Handle:
 
 ![Screenshot 2023-03-17 at 11 55 22 AM](https://user-images.githubusercontent.com/79016290/225829396-ac811249-6423-44a9-88aa-c8377c1cc6e4.png)
 
-
 °There are more swags and opportunities for the participants who will complete the whole workshop series.
+
+## How to get help?
+
+Make sure to join the Telegram Group for any queries
+
+<p align="center">
+<br>
+👉👉👉👉👉👉👉👉👉 <a href="https://t.me/+cUyVYxFCxP84N2Q1"><img alt="Telegram Group Link" src="https://img.shields.io/badge/Telegram-1DA1F2?style=for-the-badge&logo=telegram&logoColor=white"/><a> 👈👈👈👈👈👈👈👈👈
+
+</p>
+
+---
+
+---
+
+---
