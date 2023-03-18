@@ -40,7 +40,8 @@ yarn install
 -   One final step is to create an nft.storage account and get your API key. You
     can do that [here](https://nft.storage/).
 
-## CODE CODE CODE
+
+## CODE CODE CODE!! 🧑‍💻
 
 - Firstly lets take a look at [Web3Modal's docs](https://docs.walletconnect.com/2.0/web3modal/react/installation) to figure how to get setup.
 - Notice how there is a need for a projectID. Now this is what we're gonna use in web3modal for WalletConnect to know that its _you_ who's setting up your dApp. For this, lets head over to https://cloud.walletconnect.com
@@ -67,8 +68,8 @@ const wagmiClient = createClient({
 })
 const ethereumClient = new EthereumClient(wagmiClient, chains)
 ```
-What this does is, it gets your ethereumClient setup for `wagmi` to use
-- Coming to jsx, we have to somehow get wagmi to use this `wagmiClient`. For this, we have a handy-dandy Component called `WagmiConfig`. Lets wrap our app with this. But wait, before we do that, we need to also pass `ethereumClient` to Web3Modal. Lets get these two done together.
+What this does is, it gets your `ethereumClient` setup for `wagmi` (and `ethers.js` behind the hood) to use
+- Coming to jsx, we have to figure out a way to get `wagmi` to use this `wagmiClient`. For this, we have a handy-dandy Component called `WagmiConfig`. Lets wrap our app with this. But wait, before we do that, we need to also pass our `projectId` and `ethereumClient` to Web3Modal. Lets get these two done together.
 ```jsx
 <WagmiConfig client={wagmiClient}>
     <App />
@@ -83,13 +84,13 @@ What this does is, it gets your ethereumClient setup for `wagmi` to use
 </WagmiConfig>
 ```
 
-- Great going, now that our main.jsx is setup, its time to head over to `App.jsx`. Here we need to take care of one thing, we need users to be able to login with WalletConnect through Web3Modal. Also to see which account is connected, lets use `useAccount` hook from wagmi. To do that, we can use this:
+- Great going, now that our `main.jsx` is setup, its time to head over to `App.jsx`. Here we need to take care of one thing, we need users to be able to login with WalletConnect through Web3Modal. Also to see which account is connected, lets use `useAccount` hook from `wagmi`. To do that, we can use this:
 ```jsx
 import { Web3Button } from "@web3modal/react";
 import { useAccount } from "wagmi";
 ```
 
-- Now we need to check if the user is already connected and if they are, we just load the routes for them to navigate, else lets show the Web3Button.
+- Now we need to check if the user is already connected and if they are, we just load the routes for them to navigate around our dApp, else lets show the Web3Button.
 ```jsx
 const { address, isConnected } = useAccount();
 ```
@@ -116,7 +117,7 @@ and
 import { useAccount, useContract, useContractRead, useSigner } from "wagmi";
 ```
 - `useAccount` as we know is gonna give us the connected user's address, `useContract` helps us interact with the contract, `useContractRead` is a special variant of `useContract` which helps us execute contract read functions easily, and lastly, `useSigner` to give us the Signer for the connected user.
-- Lets put these imports to use now!
+- Lets put these imports to use!
 ```jsx
 const { address } = useAccount();
 const { data: signer } = useSigner();
@@ -132,15 +133,15 @@ const { data: supply } = useContractRead({
 });
 ```
 - Keep in mind we also need the `CONTRACT_ADDRESS` and `ABI` for this to work, we have defined it outside our App function.
-- Another important thing we're gonna do is use nft.storage to upload our NFT to ipfs. (You can get your key from nft.storage
+- Another important thing we're gonna do is use `nft.storage` to upload our NFT to ipfs. (You can get your key from https://nft.storage
 ```jsx
 const client = new NFTStorage({ token: NFT_STORAGE_KEY });
 ```
-- Great! Now lets see what we're gonna do when the user clicks the Upload NFT Button
+- Great! Now lets plan out what we're gonna do when the user clicks the Upload NFT Button
     - Upload the title, description and image to nft.storage
     - Get the ipfs Hash
     - Interact with our smart contract to send this hash over to our smart contract to upload it as an ERC721 token.
-    - Once its uploaded, show it in our Gallery (the `main` branch has code for our Gallery but try to figure this one out by yourself first!
+    - Once its uploaded, show it in our Gallery (the `main` branch has code for our Gallery but try to figure this one out by yourself first!)
 - Phew, thats a lot of stuff going on. Lets code it!
 ```jsx
 const uploadFile = () => {
@@ -175,6 +176,8 @@ const uploadFile = () => {
 ```
 - Now lets call the proper functions and logic on what to show and when to show it.
 - THERE YOU GO!! Great going, you've successfully created a dApp to mint an NFT 🥳
+
+
 ## What you will get out of this?
 
 -   [**Learn**]() about the **_Polygon Network_** and the solutions it provides.
