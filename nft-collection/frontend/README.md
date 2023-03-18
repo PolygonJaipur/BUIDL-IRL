@@ -40,6 +40,75 @@ yarn install
 -   One final step is to create an nft.storage account and get your API key. You
     can do that [here](https://nft.storage/).
 
+## CODE CODE CODE
+
+- Firstly lets take a look at [Web3Modal's docs](https://docs.walletconnect.com/2.0/web3modal/react/installation) to figure how to get setup.
+- Notice how there is a need for a projectID. Now this is what we're gonna use in web3modal for WalletConnect to know that its _you_ who's setting up your dApp. For this, lets head over to https://cloud.walletconnect.com
+![image](https://user-images.githubusercontent.com/26746725/226126583-880cf95d-baaf-4ca6-ab51-95b9cb71104f.png)
+- Then lets connect with wallet. This should bring up the dashboard for you.
+![image](https://user-images.githubusercontent.com/26746725/226126777-27b10f3f-c10f-4ba5-b38c-dc68e26fa948.png)
+- Click on new project and give it a name. There you go! Finally, theres the infamous project ID we're looking for 💪
+![image](https://user-images.githubusercontent.com/26746725/226127681-7b568fdd-950a-49b5-ba06-5593810db9c9.png)
+- Copy this and head over to your code. Now time to get in action. Paste this code in main.jsx
+```jsx
+import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum'
+import { Web3Modal } from '@web3modal/react'
+import { configureChains, createClient, WagmiConfig } from 'wagmi'
+import { polygonMumbai } from 'wagmi/chains'
+
+const chains = [polygonMumbai]
+const projectId = 'YOUR_PROJECT_ID'
+
+const { provider } = configureChains(chains, [w3mProvider({ projectId })])
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors: w3mConnectors({ projectId, version: 1, chains }),
+  provider
+})
+const ethereumClient = new EthereumClient(wagmiClient, chains)
+```
+What this does is, it gets your ethereumClient setup for `wagmi` to use
+- Coming to jsx, we have to somehow get wagmi to use this `wagmiClient`. For this, we have a handy-dandy Component called `WagmiConfig`. Lets wrap our app with this. But wait, before we do that, we need to also pass `ethereumClient` to Web3Modal. Lets get these two done together.
+```jsx
+<WagmiConfig client={wagmiClient}>
+    <App />
+    <Web3Modal
+        themeVariables={{
+            "--w3m-accent-color": "#8247e5",
+            "--w3m-background-color": "#8247e5",
+        }}
+        projectId={projectId}
+        ethereumClient={ethereumClient}
+    />
+</WagmiConfig>
+```
+
+- Great going, now that our main.jsx is setup, its time to head over to `App.jsx`. Here we need to take care of one thing, we need users to be able to login with WalletConnect through Web3Modal. Also to see which account is connected, lets use `useAccount` hook from wagmi. To do that, we can use this:
+```jsx
+import { Web3Button } from "@web3modal/react";
+import { useAccount } from "wagmi";
+```
+
+- Now we need to check if the user is already connected and if they are, we just load the routes for them to navigate, else lets show the Web3Button.
+```jsx
+const { address, isConnected } = useAccount();
+```
+and
+```jsx
+<div className="container">
+    {isConnected ? (
+        <Routes>
+            <Route path="/" element={<NFT />} />
+            <Route path="gallery/:id?" element={<Gallery />} />
+            <Route path="transfer/:id" element={<Transfer />} />
+        </Routes>
+    ) : (
+        <Web3Button />
+    )}
+</div>
+```
+- Awesome! Now we have a way for people to login with their fav wallet and get connected easily!
+
 ## What you will get out of this?
 
 -   [**Learn**]() about the **_Polygon Network_** and the solutions it provides.
