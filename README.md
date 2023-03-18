@@ -37,11 +37,14 @@ The `staking-dapp` will be preloaded with the code of NFT Staking since we will 
 - Register for the series [here.](https://lu.ma/buidl-irl)
 
 - Give this repo a star ⭐️
+- Fork the Git Repo
+![Screenshot 2023-03-18 at 12 12 41 PM](https://user-images.githubusercontent.com/79016290/226089900-69f45efe-f521-4c39-a8cc-41d6dcade675.png)
+![Screenshot 2023-03-18 at 12 13 05 PM](https://user-images.githubusercontent.com/79016290/226089921-5056c755-c81e-4085-a27d-79e9743d7a41.png)
 
 - Open your terminal and paste the following code:
 
 ```bash
-git clone https://github.com/PolygonJaipur/BUIDL-IRL.git
+git clone https://github.com/{username}/BUIDL-IRL.git
 cd BUIDL-IRL
 ```
 
