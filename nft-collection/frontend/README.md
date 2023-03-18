@@ -109,6 +109,72 @@ and
 ```
 - Awesome! Now we have a way for people to login with their fav wallet and get connected easily!
 
+- Now its time to setup a way for people to mint an NFT! Exciting stuff 👀
+- Lets go to `NFT.jsx` for this
+- Now this is where things get interesting. We will be doing a lot of things for this. Lets start with the imports
+```jsx
+import { useAccount, useContract, useContractRead, useSigner } from "wagmi";
+```
+- `useAccount` as we know is gonna give us the connected user's address, `useContract` helps us interact with the contract, `useContractRead` is a special variant of `useContract` which helps us execute contract read functions easily, and lastly, `useSigner` to give us the Signer for the connected user.
+- Lets put these imports to use now!
+```jsx
+const { address } = useAccount();
+const { data: signer } = useSigner();
+const contract = useContract({
+    address: CONTRACT_ADDRESS,
+    abi: ABI.abi,
+    signerOrProvider: signer,
+});
+const { data: supply } = useContractRead({
+    address: CONTRACT_ADDRESS,
+    abi: ABI.abi,
+    functionName: "totalSupply",
+});
+```
+- Keep in mind we also need the `CONTRACT_ADDRESS` and `ABI` for this to work, we have defined it outside our App function.
+- Another important thing we're gonna do is use nft.storage to upload our NFT to ipfs. (You can get your key from nft.storage
+```jsx
+const client = new NFTStorage({ token: NFT_STORAGE_KEY });
+```
+- Great! Now lets see what we're gonna do when the user clicks the Upload NFT Button
+    - Upload the title, description and image to nft.storage
+    - Get the ipfs Hash
+    - Interact with our smart contract to send this hash over to our smart contract to upload it as an ERC721 token.
+    - Once its uploaded, show it in our Gallery (the `main` branch has code for our Gallery but try to figure this one out by yourself first!
+- Phew, thats a lot of stuff going on. Lets code it!
+```jsx
+const uploadFile = () => {
+    setIsMinting(true);
+    client
+        .store({
+            name: title,
+            description,
+            image: selectedFile,
+        })
+        .then(result => {
+            const ipfsUrl = result.url;
+            console.log("IPFS url:", ipfsUrl);
+            try {
+                contract.safeMint(address, ipfsUrl).then(res => {
+                    console.log(
+                        "Minted Successfully: https://mumbai.polygonscan.com/tx/" +
+                            res.hash
+                    );
+                    setIsMinting(false);
+                    // navigate(`/gallery/${supply.toNumber()}`);
+                });
+            } catch (e) {
+                console.log(e);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            setIsMinting(false);
+        });
+};
+```
+- Now lets call the proper functions and logic on what to show and when to show it.
+- THERE YOU GO!! Great going, you've successfully created a dApp to mint an NFT 🥳
 ## What you will get out of this?
 
 -   [**Learn**]() about the **_Polygon Network_** and the solutions it provides.
