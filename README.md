@@ -6,6 +6,12 @@ _Created by [Ayush Mangal](https://twitter.com/0xayushM)_
 
 **gm gm gm**
 
+## Before we begin
+![image](https://user-images.githubusercontent.com/26746725/226090712-0f4969b0-cf4d-4188-b455-91f655fe6f60.png)
+
+[This is what we will be buidling!](https://buidl-irl.vercel.app/)
+
+
 ## Get Started!
 
 -   Register for the series [here.](https://lu.ma/buidl-irl)
