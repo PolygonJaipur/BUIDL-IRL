@@ -13,9 +13,9 @@ module.exports = {
       accounts: [PRIVATE_KEY]
     },
   },
-  etherscan: {
-    apiKey: {
-      polygonMumbai: POLYGON_SCAN_KEY,
-    },
-  },
+  // etherscan: {
+  //   apiKey: {
+  //     polygonMumbai: POLYGON_SCAN_KEY,
+  //   },
+  // },
 };
