@@ -27,9 +27,13 @@ In this tutorial we will be building an NFT collection on Polygon Mumbai Testnet
 ## Let's start building
 
 ### 1. Setting up the project
+- Fork the Git Repo
+![Screenshot 2023-03-18 at 12 12 41 PM](https://user-images.githubusercontent.com/79016290/226089900-69f45efe-f521-4c39-a8cc-41d6dcade675.png)
+THEN
+![Screenshot 2023-03-18 at 12 13 05 PM](https://user-images.githubusercontent.com/79016290/226089921-5056c755-c81e-4085-a27d-79e9743d7a41.png)
 
 - Open your terminal and run the following commands
-  - `git clone https://github.com/PolygonJaipur/BUIDL-IRL.git`
+  - `git clone https://github.com/{username}/BUIDL-IRL.git`
   - `cd BUIDL-IRL`
   - `git checkout nft-collection`
   - `cd backend`
