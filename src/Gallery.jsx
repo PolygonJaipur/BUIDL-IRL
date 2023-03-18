@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAccount, useContract, useContractRead, useSigner } from "wagmi";
 import ABI from "./contracts/ABI.json";
 
 const CONTRACT_ADDRESS = "0xf8Ef6084E0734e0359D91C82D3D23194fC832dA0";
@@ -81,22 +80,7 @@ const SingleNFT = ({ data, ...props }) => {
 };
 
 const NFTComponent = ({ id }) => {
-	const { data: signer } = useSigner();
 	const [data, setData] = useState(null);
-
-	const { data: tokenURI } = useContractRead({
-		address: CONTRACT_ADDRESS,
-		abi: ABI.abi,
-		functionName: "getTokenURI",
-		args: [id],
-	});
-
-	useEffect(() => {
-		id &&
-			fetch(getCloudflareURL(tokenURI))
-				.then(res => res.json())
-				.then(data => setData(data));
-	}, [id]);
 
 	return (
 		<div>
@@ -137,44 +121,7 @@ const NFTComponent = ({ id }) => {
 
 const GalleryForUser = () => {
 	const navigate = useNavigate();
-	const { address } = useAccount();
-	const { data: signer } = useSigner();
-
 	const [nfts, setNfts] = useState([]);
-
-	const { data: supply } = useContractRead({
-		address: CONTRACT_ADDRESS,
-		abi: ABI.abi,
-		functionName: "totalSupply",
-	});
-
-	const contract = useContract({
-		address: CONTRACT_ADDRESS,
-		abi: ABI.abi,
-		signerOrProvider: signer,
-	});
-
-	useEffect(() => {
-		const getNFTs = async () => {
-			try {
-				const nfts = [];
-				for (let i = 0; i < supply.toNumber(); i++) {
-					const res = await contract?.ownerOf(i);
-					if (res.toLowerCase() === address.toLowerCase()) {
-						const uri = await contract?.getTokenURI(i);
-						const data = await fetch(getCloudflareURL(uri));
-						const json = await data.json();
-						const nft = { tokenId: i, ...json };
-						nfts.push(nft);
-					}
-				}
-				setNfts(nfts);
-			} catch (err) {
-				console.log(err);
-			}
-		};
-		getNFTs();
-	}, [address, contract, supply]);
 
 	return (
 		<>

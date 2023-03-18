@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import ABI from "./contracts/ABI.json";
-import { useAccount, useContract, useContractRead, useSigner } from "wagmi";
-import { NFTStorage } from "nft.storage";
 import { useNavigate } from "react-router-dom";
 
 const CONTRACT_ADDRESS = "0xf8Ef6084E0734e0359D91C82D3D23194fC832dA0";
@@ -15,19 +13,8 @@ const NFT = () => {
 
 	const navigate = useNavigate();
 
-	const { address } = useAccount();
-
-	const { data: signer } = useSigner();
-
-	const contract = useContract({
-		address: CONTRACT_ADDRESS,
-		abi: ABI.abi,
-		signerOrProvider: signer,
-	});
-
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
-	const client = new NFTStorage({ token: NFT_STORAGE_KEY });
 
 	const changeHandler = event => {
 		setSelectedFile(event.target.files[0]);
@@ -42,41 +29,6 @@ const NFT = () => {
 		setDescription(event.target.value);
 	};
 
-	const { data: supply } = useContractRead({
-		address: CONTRACT_ADDRESS,
-		abi: ABI.abi,
-		functionName: "totalSupply",
-	});
-
-	const uploadFile = () => {
-		setIsMinting(true);
-		client
-			.store({
-				name: title,
-				description,
-				image: selectedFile,
-			})
-			.then(result => {
-				const ipfsUrl = result.url;
-				console.log("IPFS url:", ipfsUrl);
-				try {
-					contract.safeMint(address, ipfsUrl).then(res => {
-						console.log(
-							"Minted Successfully: https://mumbai.polygonscan.com/tx/" +
-								res.hash
-						);
-						setIsMinting(false);
-						navigate(`/gallery/${supply.toNumber()}`);
-					});
-				} catch (e) {
-					console.log(e);
-				}
-			})
-			.catch(error => {
-				console.error("Error:", error);
-				setIsMinting(false);
-			});
-	};
 	return (
 		<div className="NFT__Container">
 			{isFilePicked ? (
@@ -131,11 +83,7 @@ const NFT = () => {
 					onChange={changeHandler}
 				/>
 				{isFilePicked && (
-					<button
-						disabled={isMinting}
-						className="btn"
-						onClick={uploadFile}
-					>
+					<button disabled={isMinting} className="btn">
 						{isMinting ? (
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
