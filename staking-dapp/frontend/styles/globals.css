@@ -1,7 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk&display=swap");
 :root {
   --max-width: 1100px;
   --border-radius: 12px;
