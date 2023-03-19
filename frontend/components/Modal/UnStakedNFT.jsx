@@ -16,7 +16,7 @@ const UnstakedNft = () => {
   return (
     <div className="flex flex-col mx-auto text-center">
       <h2 className="text-2xl">Your NFTs</h2>
-      <div className="flex mx-auto my-7"></div>
+      <div className="flex flex-wrap mx-auto my-7"></div>
     </div>
   );
 };
