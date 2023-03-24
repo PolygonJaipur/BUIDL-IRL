@@ -176,7 +176,7 @@ const { address } = useAccount();
 ### 5. Working on Token Metric
 In this component we will display the total reward and the balance of a user.For this we will use BuidlToken and Staking contract.
 
-- To use contracts we will use wagmi `useContract` hook
+- To use contracts we will use wagmi `useContract` hook in `components/Modal/TokenBal.jsx`
 
 ```
 const provider = useProvider();
