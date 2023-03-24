@@ -239,7 +239,7 @@ const getBalance = async () => {
 ### 6. Fetching all NFTs
 In this we will try to display all the user owned NFTs in our Dapp
 
-- We will be using BuidlNft contract for this 
+- We will be using BuidlNft contract for this in `components/Modal/UnstakedNFT.jsx`
 
 ```
  const nftContract = useContract({
@@ -280,7 +280,7 @@ return(
 ### 6. Fetching staked NFTs
 In this we will try to display the staked NFTs in our Dapp
 
-- We will be using BuidlNft and Staking contract for this 
+- We will be using BuidlNft and Staking contract for this in `components/Modal/StakedNFT.jsx`
 
 ```
  const stakingContract = useContract({
@@ -326,7 +326,7 @@ return(
 
 ### 7. Making NFT Card component
 
-- We will be using BuidlNft and Staking contract for this 
+- We will be using BuidlNft and Staking contract for this in `components/Cards/NFTCard.jsx`
 
 ```
  const stakingContract = useContract({
