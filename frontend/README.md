@@ -76,11 +76,30 @@ const ethereumClient = new EthereumClient(wagmiClient, chains);
 - Wrap your components with wagmi and walletconnect provider
 
 ```
- <WagmiConfig client={wagmiClient}>
+import "@/styles/globals.css";
+import { useEffect, useState } from "react";
+import Navbar from "@/components/Navbar";
+...
+export default function App({ Component, pageProps }) {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    setReady(true);
+  }, []);
+  return (
+    <>
+      {ready ? (
+        <WagmiConfig client={wagmiClient}>
           <Navbar />
           <Component {...pageProps} />
           <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
-</WagmiConfig>
+        </WagmiConfig>
+      ) : (
+        <div className="flex justify-center text-2xl my-[50%]">Loading</div>
+      )}
+    </>
+  );
+}
 ```
 > You have now succefully wrapped your app with wagmi and rainbow kit 
 
