@@ -105,7 +105,7 @@ export default function App({ Component, pageProps }) {
 
 - Add connect wallet button in Navbar
 
-- Go to `components/Navbar`
+- Go to `components/Navbar/index.js`
 
 - Import Web3Button 
 ```
