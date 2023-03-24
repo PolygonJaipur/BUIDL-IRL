@@ -271,9 +271,11 @@ In this we will try to display all the user owned NFTs in our Dapp
 ```
 return(
 ....
- {nfts.map((nft, id) => (
+   <div className="flex flex-wrap mx-auto my-7">
+        {nfts.map((nft, id) => (
           <NFTCard key={id} url={nft.url} stake={true} tokenId={nft.tokenId} />
         ))}
+      </div>
  ...
  );   
 ```
@@ -315,13 +317,15 @@ In this we will try to display the staked NFTs in our Dapp
 ```
 return(
 ....
- {tokenURI && rewardBal ? (
+    <div className="mx-auto my-7">
+        {tokenURI && rewardBal ? (
           <NFTCard url={tokenURI} stake={false} tokenId={tokenId} />
         ) : (
           <section className="border p-5 rounded-lg shadow-lg">
             <h1 className="my-5 text-lg">No NFTs Staked !</h1>
           </section>
-   )}  
+        )}
+     </div>  
 ```
 
 ### 7. Making NFT Card component
