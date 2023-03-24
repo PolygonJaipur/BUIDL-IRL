@@ -11,8 +11,72 @@ const NFTCard = ({ url, stake, tokenId }) => {
     desc: "",
     tokenID: tokenId,
   });
-  const stakeNft = async () => {};
-  const unStakeNft = async () => {};
+
+  const stakingContract = useContract({
+    address: StakingAbi.address,
+    abi: StakingAbi.abi,
+    signerOrProvider: provider,
+  });
+  const nftContract = useContract({
+    address: NFTAbi.address,
+    abi: NFTAbi.abi,
+    signerOrProvider: provider,
+  });
+
+  const getData = async () => {
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+
+      setNft({
+        name: data.name,
+        image: data.image,
+        desc: data.description,
+        tokenID: tokenId,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const stakeNft = async () => {
+    try {
+      const approve = await nftContract?.isApprovedForAll(
+        address,
+        StakingAbi.address
+      );
+      console.log(approve);
+      if (!approve) {
+        const tx1 = await nftContract?.setApprovalForAll(
+          StakingAbi.address,
+          true
+        );
+      }
+      setTimeout(async () => {
+        const tx = await stakingContract?.stakeNFT(nft.tokenID);
+        console.log(tx);
+        window.alert("NFT Stake Successful");
+      }, 2000);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const unStakeNft = async () => {
+    try {
+      const tx = await stakingContract?.unStakeNFT(nft.tokenID);
+      console.log(tx);
+      const approve = await nftContract?.setApprovalForAll(
+        StakingAbi.address,
+        false
+      );
+      console.log(tx);
+      window.alert("NFT Unstake Successful");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {}, [tokenId, url]);
 
   return (
