@@ -55,7 +55,7 @@ NEXT_PUBLIC_WEB3_PROJECT_ID = "Your Web3 Project ID"
 
 ### 2. Adding Wallet connection
 
-- Go to `pages/_api.js`
+- Go to `pages/_app.js`
 
 - Create a new Wagmi client
 
