@@ -5,6 +5,7 @@ import { useAccount, useContract, useProvider } from "wagmi";
 import { ethers } from "ethers";
 
 const TokenBal = () => {
+  const { address } = useAccount();
   const [tokenBal, setTokenBal] = useState("0");
   const [rewardBal, setRewardBal] = useState("0");
 
@@ -37,14 +38,30 @@ const getBalance = async () => {
   }
 };
 
-  useEffect(() => {
-    if (address && stakingContract && tokenContract) {
-      const getReward = async () => {};
-      const getBalance = async () => {};
-      getReward();
-      getBalance();
-    }
-  }, [address, stakingContract, tokenContract]);
+useEffect(() => {
+  if (address && stakingContract && tokenContract) {
+    const getReward = async () => {
+      try {
+        const reward = await stakingContract?.calculateReward(address);
+        setRewardBal(ethers.utils.formatUnits(reward, 18));
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    const getBalance = async () => {
+      try {
+        const tokenBalance = await tokenContract?.balanceOf(address);
+
+        setTokenBal(ethers.utils.formatEther(tokenBalance));
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getReward();
+    getBalance();
+  }
+}, [address, stakingContract, tokenContract]);
+
 
   return (
     <div className="flex flex-col text-center justify-center ">

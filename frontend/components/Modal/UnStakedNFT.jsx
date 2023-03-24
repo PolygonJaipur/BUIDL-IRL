@@ -4,12 +4,14 @@ import NFTCard from "../Cards/NFTCard";
 import { useAccount, useContract, useSigner } from "wagmi";
 
 const UnstakedNft = () => {
-const [nfts, setNfts] = useState([]);
-const nftContract = useContract({
-  address: NFTAbi.address,
-  abi: NFTAbi.abi,
-  signerOrProvider: signer,
-});
+  const { data: signer } = useSigner();
+  const { address } = useAccount();
+  const [nfts, setNfts] = React.useState([]);
+  const nftContract = useContract({
+    address: NFTAbi.address,
+    abi: NFTAbi.abi,
+    signerOrProvider: signer,
+  });
 
 const getNFTs = async () => {
   try {
