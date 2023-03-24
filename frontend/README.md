@@ -101,37 +101,27 @@ export default function App({ Component, pageProps }) {
   );
 }
 ```
-> You have now succefully wrapped your app with wagmi and rainbow kit 
+> You have now succefully wrapped your app with wagmi  
 
 - Add connect wallet button in Navbar
 
 - Go to `components/Navbar`
 
-- Import Connect Wallet
-
+- Import Web3Button 
 ```
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { Web3Button } from "@web3modal/react";
 
 const Navbar = () => {
-...
 return (
-...
- <ConnectButton
-        chainStatus="icon"
-        accountStatus={{
-          smallScreen: "avatar",
-          largeScreen: "full",
-        }}
-        showBalance={{
-          smallScreen: false,
-          largeScreen: true,
-        }}
-      />
+ <nav className="flex justify-between m-5">
+      <h2 className="text-2xl font-medium">Buidl Staking </h2>
+      <Web3Button />
+    </nav>
 );
 }
 ```
 
-> You can change the connect wallet appreance and functionalities from [here](https://www.rainbowkit.com/docs/connect-button) 
+> You can know more about connect button from [here](https://docs.walletconnect.com/2.0/web3modal/about)
 
 ### 3. Adding ABIs
 - Go to ABIs folder and copy paste your smart contract address and abi in .json files
