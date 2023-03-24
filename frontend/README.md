@@ -137,7 +137,7 @@ return (
 
 ### 4. Working on main page
 
-- First we will import the different components for main page
+- First we will import the different components in pages/index.js
 
 ```
 import TokenBal from "@/components/Modal/TokenBal";
