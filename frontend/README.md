@@ -141,8 +141,8 @@ return (
 
 ```
 import TokenBal from "@/components/Modal/TokenBal";
-import StakedNft from "@/components/Modal/StakedNft";
-import UnstakedNft from "@/components/Modal/UnstakedNft";
+import StakedNft from "@/components/Modal/StakedNFT";
+import UnstakedNft from "@/components/Modal/UnstakedNFT";
 ```
 
 - Then we will fetch the connected wallet address using wagmi
