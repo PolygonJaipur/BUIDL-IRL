@@ -32,7 +32,7 @@ const Mint = ({ smartAccount }) => {
   };
   return (
     <div>
-      {smartAccount.address && (
+      {smartAccount?.address && (
         <button
           className="p-3 bg-[#ff1] text-black text-lg rounded-xl mx-[50%] min-w-[150px] my-5 hover:scale-105 font-medium"
           onClick={mintNFT}
