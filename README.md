@@ -1,30 +1,25 @@
-# BUIDL IRL
+# BUIDL-IRL
 
-# Staking dAPP
+# Gasless Transactions
 
-## Overview
+gm gm!!!
 
-We are building an NFT staking dapp which will be using the contract we built in the nft-collection. The dapp will allow users to stake their NFTs and earn rewards in the form of ERC20 tokens. The dapp will also allow users to unstake their NFTs and withdraw their rewards.
+you have come a long way, minting your first NFT to staking it. Now it's time to improve the user experience which you and all end user deserves! And for this we will be using **Account Abstraction** through [Biconomy](https://www.biconomy.io/).
 
----
+## What is Account Abstraction?
 
-## Steps to follow to start buidling
+Account abstraction is a concept that allows users to interact with smart contracts without having to pay for gas. This is done by relayers who pay for the gas and then charge the user for the transaction. This is a very useful concept for dApps that want to provide a better user experience.
 
-1. Follow the [README.md in the backend folder](https://github.com/PolygonJaipur/BUIDL-IRL/blob/staking-dapp/backend/README.md) to setup the contracts.
-2. Follow the [README.md in the frontend folder](https://github.com/PolygonJaipur/BUIDL-IRL/blob/staking-dapp/frontend/README.md) to setup the frontend.
+> You can learn more about Account Abstraction [here](https://biconomy.gitbook.io/sdk/additional-content/account-abstraction)
 
----
+## What is Biconomy?
 
-## Make sure to join the Telegram Group for any queries
+The Biconomy SDK provides solutions from onboarding to user engagement for a decentralised application (dApp) in a non-custodial way. It is a one-stop solution to enable an effortless experience in your dApp as it eases onboarding for new users and abstracts away transaction complexities that your users face on a daily basis. This is enabled using Smart Contract Wallets (SCW) built on top of our multi-chain Relayer Infrastructure.
 
-<p align="center">
-<br>
-👉👉👉👉👉👉👉👉👉 <a href="https://t.me/+cUyVYxFCxP84N2Q1"><img alt="Telegram Group Link" src="https://img.shields.io/badge/Telegram-1DA1F2?style=for-the-badge&logo=telegram&logoColor=white"/><a> 👈👈👈👈👈👈👈👈👈
-
-</p>
+> Learn more about Biconomy [here](https://biconomy.gitbook.io/sdk/introduction/overview)
 
 ---
 
 ---
 
----
+Let's BUIDL!!!
