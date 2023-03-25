@@ -55,7 +55,7 @@ NEXT_PUBLIC_WEB3_PROJECT_ID = "Your Web3 Project ID"
 
 ### 2. Adding Wallet connection
 
-- Go to `pages/_api.js`
+- Go to `pages/_app.js`
 
 - Create a new Wagmi client
 
@@ -76,43 +76,52 @@ const ethereumClient = new EthereumClient(wagmiClient, chains);
 - Wrap your components with wagmi and walletconnect provider
 
 ```
- <WagmiConfig client={wagmiClient}>
+import "@/styles/globals.css";
+import { useEffect, useState } from "react";
+import Navbar from "@/components/Navbar";
+...
+export default function App({ Component, pageProps }) {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    setReady(true);
+  }, []);
+  return (
+    <>
+      {ready ? (
+        <WagmiConfig client={wagmiClient}>
           <Navbar />
           <Component {...pageProps} />
           <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
-</WagmiConfig>
+        </WagmiConfig>
+      ) : (
+        <div className="flex justify-center text-2xl my-[50%]">Loading</div>
+      )}
+    </>
+  );
+}
 ```
-> You have now succefully wrapped your app with wagmi and rainbow kit 
+> You have now succefully wrapped your app with wagmi  
 
 - Add connect wallet button in Navbar
 
-- Go to `components/Navbar`
+- Go to `components/Navbar/index.js`
 
-- Import Connect Wallet
-
+- Import Web3Button 
 ```
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { Web3Button } from "@web3modal/react";
 
 const Navbar = () => {
-...
 return (
-...
- <ConnectButton
-        chainStatus="icon"
-        accountStatus={{
-          smallScreen: "avatar",
-          largeScreen: "full",
-        }}
-        showBalance={{
-          smallScreen: false,
-          largeScreen: true,
-        }}
-      />
+ <nav className="flex justify-between m-5">
+      <h2 className="text-2xl font-medium">Buidl Staking </h2>
+      <Web3Button />
+    </nav>
 );
 }
 ```
 
-> You can change the connect wallet appreance and functionalities from [here](https://www.rainbowkit.com/docs/connect-button) 
+> You can know more about connect button from [here](https://docs.walletconnect.com/2.0/web3modal/about)
 
 ### 3. Adding ABIs
 - Go to ABIs folder and copy paste your smart contract address and abi in .json files
@@ -128,12 +137,12 @@ return (
 
 ### 4. Working on main page
 
-- First we will import the different components for main page
+- First we will import the different components in pages/index.js
 
 ```
 import TokenBal from "@/components/Modal/TokenBal";
-import StakedNft from "@/components/Modal/StakedNft";
-import UnstakedNft from "@/components/Modal/UnstakedNft";
+import StakedNft from "@/components/Modal/StakedNFT";
+import UnstakedNft from "@/components/Modal/UnstakedNFT";
 ```
 
 - Then we will fetch the connected wallet address using wagmi
@@ -167,7 +176,7 @@ const { address } = useAccount();
 ### 5. Working on Token Metric
 In this component we will display the total reward and the balance of a user.For this we will use BuidlToken and Staking contract.
 
-- To use contracts we will use wagmi `useContract` hook
+- To use contracts we will use wagmi `useContract` hook in `components/Modal/TokenBal.jsx`
 
 ```
 const provider = useProvider();
@@ -230,7 +239,7 @@ const getBalance = async () => {
 ### 6. Fetching all NFTs
 In this we will try to display all the user owned NFTs in our Dapp
 
-- We will be using BuidlNft contract for this 
+- We will be using BuidlNft contract for this in `components/Modal/UnstakedNFT.jsx`
 
 ```
  const nftContract = useContract({
@@ -262,16 +271,18 @@ In this we will try to display all the user owned NFTs in our Dapp
 ```
 return(
 ....
- {nfts.map((nft, id) => (
+   <div className="flex flex-wrap mx-auto my-7">
+        {nfts.map((nft, id) => (
           <NFTCard key={id} url={nft.url} stake={true} tokenId={nft.tokenId} />
         ))}
+      </div>
  ...
  );   
 ```
 ### 6. Fetching staked NFTs
 In this we will try to display the staked NFTs in our Dapp
 
-- We will be using BuidlNft and Staking contract for this 
+- We will be using BuidlNft and Staking contract for this in `components/Modal/StakedNFT.jsx`
 
 ```
  const stakingContract = useContract({
@@ -306,18 +317,20 @@ In this we will try to display the staked NFTs in our Dapp
 ```
 return(
 ....
- {tokenURI && rewardBal ? (
+    <div className="mx-auto my-7">
+        {tokenURI && rewardBal ? (
           <NFTCard url={tokenURI} stake={false} tokenId={tokenId} />
         ) : (
           <section className="border p-5 rounded-lg shadow-lg">
             <h1 className="my-5 text-lg">No NFTs Staked !</h1>
           </section>
-   )}  
+        )}
+     </div>  
 ```
 
 ### 7. Making NFT Card component
 
-- We will be using BuidlNft and Staking contract for this 
+- We will be using BuidlNft and Staking contract for this in `components/Cards/NFTCard.jsx`
 
 ```
  const stakingContract = useContract({
