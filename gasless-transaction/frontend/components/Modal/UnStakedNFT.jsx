@@ -1,44 +1,62 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import NFTAbi from "@/ABIs/BuidlNFT.json";
-import NFTCard from "../Cards/NFTCard";
-import { useAccount, useContract, useSigner } from "wagmi";
 
-const UnstakedNft = () => {
+import NFTCard from "../Cards/NFTCard";
+import { useContract, useSigner } from "wagmi";
+
+const UnstakedNft = ({ smartAccount }) => {
   const { data: signer } = useSigner();
-  const { address } = useAccount();
-  const [nfts, setNfts] = React.useState([]);
+  const [nfts, setNfts] = useState([]);
   const nftContract = useContract({
     address: NFTAbi.address,
     abi: NFTAbi.abi,
     signerOrProvider: signer,
   });
 
-  useEffect(() => {
-    if (address) {
+  async function getNfts() {
+    if (smartAccount?.address) {
       const getNFTs = async () => {
         try {
-          setNfts([])
-          const tx1 = await nftContract?.balanceOf(address);
+          const tx1 = await nftContract?.balanceOf(smartAccount?.address);
           const index = tx1.toNumber();
+
+          const txss = await nftContract?.tokenOfOwnerByIndex(
+            smartAccount?.address,
+            0
+          );
           for (let i = 0; i < index; i++) {
-            const tx = await nftContract?.tokenOfOwnerByIndex(address, i);
+            const tx = await nftContract?.tokenOfOwnerByIndex(
+              smartAccount?.address,
+              i
+            );
             const tx2 = await nftContract?.tokenURI(tx.toNumber());
-            setNfts((prev) => [...prev, { tokenId: tx.toNumber(), url: tx2 }]);
+
+            setNfts([{ tokenId: tx.toNumber(), url: tx2 }]);
           }
+          console.log(nfts);
         } catch (err) {
           console.log(err);
         }
       };
       getNFTs();
     }
-  }, [address, nftContract]);
+  }
 
   return (
     <div className="flex flex-col mx-auto text-center">
+      <button onClick={getNfts}>See Your NFTS</button>
+
+      {nfts && console.log(nfts)}
       <h2 className="text-2xl">Your NFTs</h2>
-      <div className="flex flex-wrap mx-auto my-7">
+      <div className="flex mx-auto my-7">
         {nfts.map((nft, id) => (
-          <NFTCard key={id} url={nft.url} stake={true} tokenId={nft.tokenId} />
+          <NFTCard
+            key={id}
+            url={nft.url}
+            stake={true}
+            tokenId={nft.tokenId}
+            smartAccount={smartAccount}
+          />
         ))}
       </div>
     </div>

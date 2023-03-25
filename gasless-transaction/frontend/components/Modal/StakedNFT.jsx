@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import NFTCard from "../Cards/NFTCard";
 import NFTAbi from "@/ABIs/BuidlNFT.json";
 import StakingAbi from "@/ABIs/Staking.json";
-import { useAccount, useContract, useProvider } from "wagmi";
+import { useContract, useProvider } from "wagmi";
 import { ethers } from "ethers";
 
-const StakedNft = () => {
+const StakedNft = ({ smartAccount }) => {
   const provider = useProvider();
-  const { address } = useAccount();
   const [rewardBal, setRewardBal] = useState();
   const [tokenId, setTokenId] = useState();
   const [tokenURI, setTokenURI] = useState("");
@@ -22,11 +21,13 @@ const StakedNft = () => {
     signerOrProvider: provider,
   });
 
-  useEffect(() => {
-    if (address) {
+  async function getStaked() {
+    if (smartAccount?.address) {
+      console.log("Smart Contract Wallet Address:", smartAccount?.address);
+
       const getStakedNFTs = async () => {
         try {
-          const tx = await stakingContract?.stakeTokenId(address);
+          const tx = await stakingContract?.stakeTokenId(smartAccount?.address);
           setTokenId(tx.toNumber());
           console.log(tx.toNumber());
           const tx2 = await nftContract?.tokenURI(tokenId);
@@ -37,10 +38,12 @@ const StakedNft = () => {
       };
       getStakedNFTs();
     }
-    if (address) {
+    if (smartAccount?.address) {
       const getReward = async () => {
         try {
-          const reward = await stakingContract?.calculateReward(address);
+          const reward = await stakingContract?.calculateReward(
+            smartAccount?.address
+          );
           setRewardBal(ethers.utils.formatUnits(reward, 18));
         } catch (err) {
           console.log(err);
@@ -48,13 +51,18 @@ const StakedNft = () => {
       };
       getReward();
     }
-  }, [tokenId, address, stakingContract, nftContract]);
+  }
   return (
     <div className="flex flex-col mx-auto text-center">
-      <h2 className="text-2xl">Your Staked NFTs</h2>
+      <button onClick={getStaked}>See your staked NFTs</button>{" "}
       <div className="mx-auto my-7">
         {tokenURI && rewardBal ? (
-          <NFTCard url={tokenURI} stake={false} tokenId={tokenId} />
+          <NFTCard
+            url={tokenURI}
+            stake={false}
+            tokenId={tokenId}
+            smartAccount={smartAccount}
+          />
         ) : (
           <section className="border p-5 rounded-lg shadow-lg">
             <h1 className="my-5 text-lg">No NFTs Staked !</h1>
