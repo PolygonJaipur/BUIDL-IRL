@@ -96,10 +96,10 @@ Let's BUIDL!!!
   import SmartAccount from "@biconomy/smart-account";
 
   /// Importing the components
-  import UnstakedNft from "../Modal/UnStakedNFT";
-  import StakedNft from "../Modal/StakedNft";
-  import TokenBal from "../Modal/TokenBal";
-  import Mint from "../../pages/mint";
+  import UnstakedNft from "./Modal/UnstakedNft";
+  import StakedNft from "./Modal/StakedNft";
+  import TokenBal from "./Modal/TokenBal";
+  import Mint from "../pages/mint";
   ```
 
   Here
