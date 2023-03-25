@@ -1,64 +1,76 @@
-import React, { SVGProps, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import NFTAbi from "@/ABIs/BuidlNFT.json";
 import StakingAbi from "@/ABIs/Staking.json";
-import { useAccount, useContract, useSigner } from "wagmi";
+import { ethers } from "ethers";
 
-const NFTCard = ({ url, stake, tokenId }) => {
-  const { data: signer } = useSigner();
-  const { address } = useAccount();
-  const stakingContract = useContract({
-    address: StakingAbi.address,
-    abi: StakingAbi.abi,
-    signerOrProvider: signer,
-  });
-  const nftContract = useContract({
-    address: NFTAbi.address,
-    abi: NFTAbi.abi,
-    signerOrProvider: signer,
-  });
-
+const NFTCard = ({ url, stake, tokenId, smartAccount }) => {
   const [nft, setNft] = useState({
     name: "",
     image: "",
     desc: "",
     tokenID: tokenId,
   });
+
   const stakeNft = async () => {
-    try {
-      const approve = await nftContract?.isApprovedForAll(
-        address,
-        StakingAbi.address
-      );
-      console.log(approve);
-      if (!approve) {
-        const tx1 = await nftContract?.setApprovalForAll(
-          StakingAbi.address,
-          true
-        );
-      }
-      setTimeout(async () => {
-        const tx = await stakingContract?.stakeNFT(nft.tokenID);
-        console.log(tx);
-        window.alert("NFT Stake Successful");
-      }, 2000);
-    } catch (err) {
-      console.log(err);
-    }
+    const txs = [];
+    const nftContractInterface = new ethers.utils.Interface(NFTAbi.abi);
+    const stakingContractInterface = new ethers.utils.Interface(StakingAbi.abi);
+
+    const data1 = nftContractInterface.encodeFunctionData("setApprovalForAll", [
+      StakingAbi.address,
+      true,
+    ]);
+    const tx1 = {
+      to: NFTAbi.address,
+      data: data1,
+    };
+    txs.push(tx1);
+    const data2 = stakingContractInterface.encodeFunctionData("stakeNFT", [
+      nft.tokenID,
+    ]);
+    const tx2 = {
+      to: StakingAbi.address,
+      data: data2,
+    };
+    txs.push(tx2);
+
+    const txResponse = await smartAccount.sendGaslessTransactionBatch({
+      transactions: txs,
+    });
+    console.log("tx hash generated", txResponse.hash);
+    const receipt = await txResponse.wait();
+    console.log("tx receipt", receipt);
   };
+
   const unStakeNft = async () => {
-    try {
-      const tx = await stakingContract?.unStakeNFT(nft.tokenID);
-      console.log(tx);
-      const approve = await nftContract?.setApprovalForAll(
-        StakingAbi.address,
-        false
-      );
-      console.log(tx);
-      window.alert("NFT Unstake Successful");
-    } catch (err) {
-      console.log(err);
-    }
+    const txs = [];
+    const withdrawApproval = new ethers.utils.Interface(NFTAbi.abi);
+    const unStake = new ethers.utils.Interface(StakingAbi.abi);
+
+    const data1 = withdrawApproval.encodeFunctionData("setApprovalForAll", [
+      StakingAbi.address,
+      false,
+    ]);
+    const tx1 = {
+      to: NFTAbi.address,
+      data: data1,
+    };
+    txs.push(tx1);
+    const data2 = unStake.encodeFunctionData("unStakeNFT", [nft.tokenID]);
+    console.log(nft.tokenID);
+    const tx2 = {
+      to: StakingAbi.address,
+      data: data2,
+    };
+    txs.push(tx2);
+
+    const txResponse = await smartAccount.sendGaslessTransactionBatch({
+      transactions: txs,
+    });
+    console.log("tx hash generated", txResponse.hash);
+    const receipt = await txResponse.wait();
+    console.log("tx receipt", receipt);
   };
   useEffect(() => {
     if (url) {
