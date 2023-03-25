@@ -33,7 +33,6 @@ const UnstakedNft = ({ smartAccount }) => {
 
             setNfts([{ tokenId: tx.toNumber(), url: tx2 }]);
           }
-          console.log(nfts);
         } catch (err) {
           console.log(err);
         }
@@ -46,7 +45,6 @@ const UnstakedNft = ({ smartAccount }) => {
     <div className="flex flex-col mx-auto text-center">
       <button onClick={getNfts}>See Your NFTS</button>
 
-      {nfts && console.log(nfts)}
       <h2 className="text-2xl">Your NFTs</h2>
       <div className="flex mx-auto my-7">
         {nfts.map((nft, id) => (
