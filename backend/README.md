@@ -1,17 +1,35 @@
-# BUIDL-IRL DAY#2
+# BUIDL-IRL
 
-## STAKING DAPP
+## Gasless Transactions
 
-## What are we going to build?
+gm gm!!!
 
-In this tutorial we will be building an Staking dApp on Polygon Mumbai Testnet.
+you have come a long way, minting your first NFT to staking it. Now it's time to improve the user experience which you and all end user deserves! And for this we will be using **Account Abstraction** through [Biconomy](https://www.biconomy.io/).
+
+## What is Account Abstraction?
+
+Account abstraction is a concept that allows users to interact with smart contracts without having to pay for gas. This is done by relayers who pay for the gas and then charge the user for the transaction. This is a very useful concept for dApps that want to provide a better user experience.
+
+> You can learn more about Account Abstraction [here](https://biconomy.gitbook.io/sdk/additional-content/account-abstraction)
+
+## What is Biconomy?
+
+The Biconomy SDK provides solutions from onboarding to user engagement for a decentralised application (dApp) in a non-custodial way. It is a one-stop solution to enable an effortless experience in your dApp as it eases onboarding for new users and abstracts away transaction complexities that your users face on a daily basis. This is enabled using Smart Contract Wallets (SCW) built on top of our multi-chain Relayer Infrastructure.
+
+> Learn more about Biconomy [here](https://biconomy.gitbook.io/sdk/introduction/overview)
+
+---
+
+---
+
+Let's BUIDL!!!
 
 ## Tech Stack Used
 
 - NextJS
 - Solidity
 - Hardhat
-- WAGMI
+- Ethers.js
 - Wallet Connect
 
 ## Prerequisites
@@ -24,478 +42,769 @@ In this tutorial we will be building an Staking dApp on Polygon Mumbai Testnet.
 
 - [Install VS CODE](https://code.visualstudio.com/docs/setup/windows)or Any other IDE
 
-## Let's start BUIDLing
-
 ### 1. Setting up the project
 
+- Fork the Git Repo
+  ![Screenshot 2023-03-18 at 12 12 41 PM](https://user-images.githubusercontent.com/79016290/226089900-69f45efe-f521-4c39-a8cc-41d6dcade675.png)
+  THEN
+  ![Screenshot 2023-03-18 at 12 19 33 PM](https://user-images.githubusercontent.com/79016290/226090248-057cb68c-3fb6-4194-941e-c33b2648c0d9.png)
+
 - Open your terminal and run the following commands
-  - `git clone https://github.com/PolygonJaipur/BUIDL-IRL.git`
+
+  - `git clone https://github.com/{username}/BUIDL-IRL.git`
   - `cd BUIDL-IRL`
-  - `git checkout staking-dapp`
-  - `cd backend`
+  - `git checkout gasless-transactions`
+  - `cd frontend`
   - `yarn install`
     These commands in the same order will install all the dependencies for building.
-- Create `.env` file in the `backend` directory.
 
-  - Go to [Alchemy](https://dashboard.alchemy.com/) and create a new account. Then create a new app and copy the URL and paste it in the `.env` file. Like this:
-    `ALCHEMY_HTTP_URL = "https://eth-ropsten.alchemyapi.io/v2/your-api-key"`
-  - Go to our Metamask Wallet, copy the Private Key from there and paste it like this:
-    `PRIVATE_KEY = Your Private Key`
-  - Go to [Polygon Scan](https://polygonscan.com/myapikey), sign in and then create an API Key. After that paste it like this:
-    `POLYGON_SCAN_KEY= Your Polygon Scan Key`
+- Create an `.env` file in `frontend` folder.
 
-- Go to `hardhat.config.js` and paste the following code in it:
-
-```javascript
-require("@nomicfoundation/hardhat-toolbox");
-require("dotenv").config();
-
-const ALCHEMY_HTTP_URL = process.env.ALCHEMY_HTTP_URL;
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const POLYGON_SCAN_KEY = process.env.POLYGON_SCAN_KEY;
-
-module.exports = {
-  solidity: "0.8.18",
-  networks: {
-    mumbai: {
-      url: ALCHEMY_HTTP_URL,
-      accounts: [PRIVATE_KEY],
-    },
-  },
-  etherscan: {
-    apiKey: {
-      polygonMumbai: POLYGON_SCAN_KEY,
-    },
-  },
-};
-```
-
-Here we are importing the `hardhat-toolbox` which will help us to deploy our contract on Polygon Mumbai Testnet. We are also importing the `dotenv` which will help us to import the environment variables from the `.env` file. We are also importing the `ALCHEMY_HTTP_URL`, `PRIVATE_KEY` and `POLYGON_SCAN_KEY` from the `.env` file. We are also specifying the `solidity` version and the `networks` we are going to use. We are also specifying the `etherscan` API key for verifying the contract on Polygon Scan.
-
-> So our development environment is ready!!!
+  ```text
+  NEXT_PUBLIC_WEB3_PROJECT_ID = "Your Wallet Connect Project ID"
+  ```
 
 ---
 
 ---
 
-### 2. Writing the Smart Contract
+### 2. Installing the Biconomy SDK
 
-You will notice that you already have the `BuidlNFT.sol` present in your contract directory, and yeah it's the same contract we built in the previous tutorial. Cool right? Working on your own contract to build a better dApp.
-For the staking dapp we will be requiring two more contracts, one for the **BuidlToken** and the other for the **Staking Contract**. BuidlToken will be our test token which we will mint for the staker and staking contract will be the contract which will be responsible for staking the BuidlNFT and minting the BuidlToken.
+- Run the following command in the terminal
 
----
+  ```bash
+  yarn add @biconomy/core-types @biconomy/smart-account @biconomy/web3-auth
+  ```
 
-- Create a new file named `BuidlToken.sol` in the `contracts` directory.
-- Intiate the file with the imports required by our BuidlToken.
-
-```solidity
-// SPDX-License-Identifier: MIT
-pragma solidity 0.8.18;
-
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-```
-
-here we are importing the ERC20.sol is the standard ERC20 contract provided by OpenZeppelin.
-
-- Let's instantiate the contract with the following code:
-
-```solidity
-contract BuidlToken is ERC20 {
-    /// @dev Address of the owner.
-    address owner;
-
-    /// Constructor to initialize the ERC20 Token
-    /// @param name token name
-    /// @param symbol token symbol
-    constructor(string memory name, string memory symbol) ERC20(name, symbol) {
-        owner = msg.sender;
-    }
-```
-
-here we have instantiated the contract with the name `BuidlToken` and we are inheriting the ERC20 contract from OpenZeppelin. We are also initializing the owner of the contract with the `msg.sender` which is the address of the account that deployed the contract. The constructor will take the name and symbol of the Token as parameters and will pass them to the constructor of the `ERC20` contract.
-
-- Let's create Mint Function for the BuidlToken
-
-```solidity
-    /// Function to mint the token for a particular address.
-    /// @param to Address of the receiver.
-    /// @param amount Amount of token to be minted.
-    function mintToken(address to, uint256 amount) external {
-        _mint(to, amount);
-    }
-}
-```
-
-here we have created a function named `mintToken` which will take the address of the receiver and the amount of token to be minted as parameters. This function will be called by the Staking Contract to mint the BuidlToken for the staker. The `_mint` function is provided by the `ERC20` contract which we have inherited.
-
----
-
-- Create a new file named `Staking.sol` in the `contracts` directory.
-- Intiate the file with the imports required by our Staking Contract.
-
-```solidity
-
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.18;
-
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
-
-import "./BuidlToken.sol";
-```
-
-here we are importing the `IERC721` which is the interface of the ERC721 contract provided by OpenZeppelin. We are also importing the `ERC721Holder` which is the contract provided by OpenZeppelin which will help us to receive the NFTs. We are also importing the `BuidlToken` contract which we have created in the previous step.
-
-- Let's instantiate the contract with the following code:
-
-```solidity
-contract Staking is ERC721Holder {
-    /// @notice NFT contract
-    IERC721 public buidlNFT;
-
-    /// @notice Token contract
-    BuidlToken public buidlToken;
-
-    /// @dev owner of the contract
-    address owner;
-
-    /// @notice Emission rate per second
-    uint256 public EMISSION_RATE = ((10 ** 18) / (uint256(1 days)));
-
-    /// @notice Staking start time
-    mapping(address => uint256) public tokenStakedAt;
-
-    /// @notice Token ID of the staked NFT
-    mapping(address => uint256) public stakeTokenId;
-
-    /// @notice Constructor
-    /// @param nft  NFT contract address
-    /// @param token Token contract address
-    constructor(address nft, address token) {
-        buidlNFT = IERC721(nft);
-        buidlToken = BuidlToken(token);
-    }
-```
-
-here we have instantiated the contract with the name `Staking` and inherited the `ERC721Holder`.
-Then we have intialised several variables, the `buidlNFT` for **NFT contract** and the `buidlToken`for **Token contract**. We are also initializing the **owner** of the contract with the `msg.sender` which is the address of the account that deployed the contract. We have intialised the `EMISSION_RATE` with the value of **1 token per day**. We have also created two **mappings** named `tokenStakedAt` and `stakeTokenId` which will store the time at which the NFT was staked and the token ID of the staked NFT respectively. The constructor will take the address of the NFT contract and the Token contract as parameters and will pass them to the variables `buidlNFT` and `buidlToken` respectively.
-
-- Let's create the function to stake the NFT
-
-```solidity
-    /// Function to stake the NFT
-    /// This will transfer the NFT to the contract, and start the staking timer for the user.
-    /// @param tokenId Token ID of the NFT to stake
-    function stakeNFT(uint256 tokenId) external {
-        require(buidlNFT.ownerOf(tokenId) == msg.sender, "ERR:NO");
-        buidlNFT.safeTransferFrom(msg.sender, address(this), tokenId);
-        tokenStakedAt[msg.sender] = block.timestamp;
-        stakeTokenId[msg.sender] = tokenId;
-    }
-```
-
-here we have created a function named `stakeNFT` which will take the token ID of the NFT to be staked as a parameter. This function will be called by the user to stake the NFT. We are first checking if the user is the owner of the NFT, if yes then we are transferring the NFT to the contract using the `safeTransferFrom` function provided by the `IERC721` interface. We are also storing the time at which the NFT was staked in the `tokenStakedAt` mapping and the token ID of the staked NFT in the `stakeTokenId` mapping.
-
-> Note: The `safeTransferFrom` function will only work if the owner of the NFT has approved the contract to transfer the NFT. For that we will be using the `approve` function provided by the `IERC721` interface which will be called by the user before calling the `stakeNFT` function directly from the frontend.
-
-- Let's create a function to calculate reward amount user is going to receive when unstaking the NFT.
-
-```solidity
-    /// Function to calculate the reward for the staker
-    /// @param staker Address of the staker
-    function calculateReward(address staker) public view returns (uint256) {
-        require(tokenStakedAt[staker] != 0, "ERR:NS");
-        uint256 time = block.timestamp - tokenStakedAt[staker];
-        return (time * EMISSION_RATE);
-    }
-```
-
-here we have created a function named `calculateReward` which will take the address of the staker as a parameter. This function will be called by the user to calculate the reward amount he/she is going to receive when unstaking the NFT. We are first checking if the user has staked the NFT or not, if yes then we are calculating the time for which the NFT was staked and multiplying it with the `EMISSION_RATE` to get the reward amount.
-
-- Let's create a function to unstake the NFT
-
-```solidity
-    /// Function to unstake the NFT
-    /// This will transfer the NFT back to the user, and mint the reward for the user.
-    /// @param tokenId Token ID of the NFT to unstake
-    function unStakeNFT(uint256 tokenId) external {
-        require(stakeTokenId[msg.sender] == tokenId, "ERR:NY");
-        uint256 rewardAmount = calculateReward(msg.sender);
-
-        buidlNFT.safeTransferFrom(address(this), msg.sender, tokenId);
-
-        buidlToken.mintToken(msg.sender, rewardAmount);
-
-        delete stakeTokenId[msg.sender];
-        delete tokenStakedAt[msg.sender];
-    }
-}
-```
-
-here we have created a function named `unStakeNFT` which will take the token ID of the NFT to be unstaked as a parameter. This function will be called by the user to unstake the NFT. We are first checking if the user has staked the NFT or not, if yes then we are calculating the reward amount using the `calculateReward` function and minting the reward amount for the user using the `mintToken` function of the `BuidlToken` contract. We are also transferring the NFT back to the user using the `safeTransferFrom` function provided by the `IERC721` interface. Then we are deleting the token ID of the staked NFT and the time at which the NFT was staked from the `stakeTokenId` and `tokenStakedAt` mappings respectively.
-
-> So we have written all the contracts required by our staking dapp.
+  This will install the Biconomy SDK in your project.
 
 ---
 
 ---
 
-### 3. Testing the Smart Contract
+### 3. Setting up the Biconomy SDK
 
-Delete the `Lock.js` file from the `test` folder.
+- Create a new file named `Main.js` in `frontend/components` folder.
+- Input all the imports
 
-````javascript
+  ```javascript
+  import React, { useEffect, useState } from "react";
+  import { useAccount, useSigner } from "wagmi";
 
-##### 1. Testing the Deployment of the Smart Contracts.
+  /// Imports required by Biconomy
+  import { ChainId } from "@biconomy/core-types";
+  import SmartAccount from "@biconomy/smart-account";
 
-- Create a new file named `deploy.js` in the `test` folder and add the following code:
+  /// Importing the components
+  import UnstakedNft from "../Modal/UnStakedNFT";
+  import StakedNft from "../Modal/StakedNft";
+  import TokenBal from "../Modal/TokenBal";
+  import Mint from "../../pages/mint";
+  ```
 
-```javascript
-const hre = require("hardhat");
-const { expect } = require("chai");
+  Here
 
-describe("Staking Contract Deployment", function () {
-  it("Should deploy the Staking Contract", async function () {
-    const [owner, user1] = await hre.ethers.getSigners();
+  - the starting two imports are for managing the state of the Next App and the state of the wallet.
+  - the next two imports are for importing the Biconomy SDK.
+  - the rest of the imports are for importing the components that we will be using in our app.
 
-    const NFT = await ethers.getContractFactory("BuidlNFT");
-    const nft = await NFT.deploy("BuidlNFT", "BN");
-    await nft.deployed().then((val) => {
-      console.log("NFT Contract Deployed");
-      console.log("Contract Address: " + nft.address);
-    });
+- Create a new function named `main.jsx` and export it.
 
-    const TOKEN = await ethers.getContractFactory("BuidlToken");
-    const token = await TOKEN.deploy("BuidlToken", "BT");
-    await token.deployed().then((val) => {
-      console.log("Token Contract Deployed");
-      console.log("Contract Address: " + token.address);
-    });
+  ```javascript
+  const Main = () => {};
+  export default Main;
+  ```
 
-    const STAKING = await ethers.getContractFactory("Staking");
-    const staking = await STAKING.deploy(nft.address, token.address);
-    await staking.deployed().then((val) => {
-      console.log("Staking Contract Deployed");
-      console.log("Contract Address: " + staking.address);
-    });
+- Now create few state variables
 
-    expect(await staking.buidlToken()).to.be.equal(token.address);
-    expect(await staking.buidlNFT()).to.be.equal(nft.address);
-  });
-});
-````
+  ```javascript
+  const { data: signer } = useSigner();
+  const { address } = useAccount();
+  const [smartAccount, setSmartAccount] = useState(null);
+  const [scwAddress, setScwAddress] = useState("");
+  const [scwLoading, setScwLoading] = useState(false);
+  const activeChainId = ChainId.POLYGON_MUMBAI;
+  ```
 
-- Run `npx hardhat test test/deploy.js` to run the script.
+  Here
 
-This test is to check whether our contract is deployed successfully or not. We are first deploying the `BuidlNFT` and `BuidlToken` contracts and then deploying the `Staking` contract. We are also checking if the `buidlToken` and `buidlNFT` variables of the `Staking` contract are set to the address of the `BuidlToken` and `BuidlNFT` contracts respectively.
+  - `signer` is the signer of the wallet.
+  - `address` is the address of the wallet.
+  - `smartAccount` is the instance of the Smart Account.
+  - `scwAddress` is the address of the Smart Contract Wallet.
+  - `scwLoading` is the state variable that will be used to show the loading state.
+  - `activeChainId` is the chain id of the network on which we want to deploy our smart contract wallet.
 
-### 2. Testing the `stakeNFT` function
+- Now define our `useState` function.
 
-- Create a new file named `stake.js` in the `test` folder and add the following code:
+      ```javascript
 
-```javascript
-const hre = require("hardhat");
-const { expect } = require("chai");
-const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
+        useEffect(() => {
+        if (signer) {
+        async function setupSmartAccount() {
+        setScwAddress("");
+        setScwLoading(true);
 
-describe("Staking Function", function () {
-  async function fixture() {
-    const [deployer, user1] = await hre.ethers.getSigners();
+        const smartAccount = new SmartAccount(signer.provider, {
+          activeNetworkId: activeChainId,
+          supportedNetworksIds: [activeChainId],
+          networkConfig: [
+            {
+              chainId: activeChainId,
+              dappAPIKey: "59fRCMXvk.8a1652f0-b522-4ea7-b296-98628499aee3",
+            },
+          ],
+        });
+        console.log("wallet", smartAccount);
 
-    const nft = await hre.ethers.getContractFactory("BuidlNFT");
-    const nftContract = await nft.deploy("BuidlNFT", "BN");
-    await nftContract.deployed();
+        const smartAccountss = await smartAccount.init();
+        console.info("smartAccount", smartAccountss);
+        setScwAddress(smartAccount.address);
+        setSmartAccount(smartAccount);
+        setScwLoading(false);
+      }
+      if (!!signer.provider && !!address) {
+        setupSmartAccount();
+      }}
+      }, [address, signer]);
+      ```
 
-    const token = await hre.ethers.getContractFactory("BuidlToken");
-    const tokenContract = await token.deploy("BuidlToken", "BT");
-    await tokenContract.deployed();
+  Here
 
-    const staking = await hre.ethers.getContractFactory("Staking");
-    const stakingContract = await staking.deploy(
-      nftContract.address,
-      tokenContract.address
-    );
-    await stakingContract.deployed();
+  - if the user connects to the wallet, the `setupSmartAccount` function will be called.
+  - `setUpSmartAccount` is the function that will be used to create the instance of the Smart Account. This function will be called when the user connects their wallet and will set the state variables accordingly.
 
-    await nftContract
-      .connect(deployer)
-      .safeMint(user1.address, "")
-      .then((val) => {
-        console.log("NFT Minted");
-      });
+- Lastly, we will return the JSX for our app.
 
-    return { deployer, user1, nftContract, tokenContract, stakingContract };
-  }
+  ```javascript
+  /// Passing the smartAccount to the components
+  return (
+    <div>
+      {scwLoading && <h2>Loading Smart Account...</h2>}
+      {scwAddress && console.log(scwAddress)}
+      <TokenBal smartAccount={smartAccount} />
+      <StakedNft smartAccount={smartAccount} />
+      <UnstakedNft smartAccount={smartAccount} />
+      <Mint smartAccount={smartAccount} />
+    </div>
+  );
+  ```
 
-  it("Should stake the NFT", async function () {
-    const { user1, nftContract, tokenContract, stakingContract } =
-      await loadFixture(fixture);
-    await nftContract
-      .connect(user1)
-      .setApprovalForAll(stakingContract.address, true)
-      .then((val) => {
-        console.log("NFT Approved");
-      });
+  Here
 
-    await stakingContract
-      .connect(user1)
-      .stakeNFT(0)
-      .then((val) => {
-        console.log("NFT Staked");
-      });
+  - `scwLoading` is the state variable that will be used to show the loading state.
+  - `scwAddress` is the address of the Smart Contract Wallet.
+  - `TokenBal` is the component that will be used to show the balance of the token.
+  - `StakedNft` is the component that will be used to show the staked NFTs.
+  - `UnstakedNft` is the component that will be used to show the unstaked NFTs.
 
-    expect(await nftContract.balanceOf(user1.address)).to.equal(0);
-    expect(await nftContract.balanceOf(stakingContract.address)).to.equal(1);
-  });
-});
-```
+---
 
-- Run `npx hardhat test test/stake.js` to run the script.
+---
 
-This test is to check whether the `stakeNFT` function is working properly or not. We are first deploying the `BuidlNFT` and `BuidlToken` contracts and then deploying the `Staking` contract. We are also minting an NFT for the user and approving the `Staking` contract to transfer the NFT on behalf of the user. Then we are calling the `stakeNFT` function of the `Staking` contract and checking if the NFT is transferred to the `Staking` contract or not.
+### 4. Make `mint` function gasless
 
-### 3. Testing the `unStakeNFT` function.
+- Go to `frontend/pages/mint.jsx`
+- Import `ethers`
 
-- Create a new file named `unstake.js` in the `test` folder and add the following code:
+  ```javascript
+  import { ethers } from "ethers";
+  ```
 
-```javascript
-const hre = require("hardhat");
-const { expect } = require("chai");
-const {
-  loadFixture,
-  time,
-} = require("@nomicfoundation/hardhat-network-helpers");
-const { ethers } = require("ethers");
+- Change the `mint` function present in it to this
 
-describe("Unstaking Function", function () {
-  async function fixture() {
-    const [deployer, user1] = await hre.ethers.getSigners();
-
-    const nft = await hre.ethers.getContractFactory("BuidlNFT");
-    const nftContract = await nft.deploy("BuidlNFT", "BN");
-    await nftContract.deployed();
-
-    const token = await hre.ethers.getContractFactory("BuidlToken");
-    const tokenContract = await token.deploy("BuidlToken", "BT");
-    await tokenContract.deployed();
-
-    const staking = await hre.ethers.getContractFactory("Staking");
-    const stakingContract = await staking.deploy(
-      nftContract.address,
-      tokenContract.address
-    );
-    await stakingContract.deployed();
-
-    await nftContract
-      .connect(deployer)
-      .safeMint(user1.address, "")
-      .then((val) => {
-        console.log("NFT Minted");
-      });
-
-    await nftContract
-      .connect(user1)
-      .setApprovalForAll(stakingContract.address, true)
-      .then((val) => {
-        console.log("NFT Approved");
-      });
-
-    await stakingContract
-      .connect(user1)
-      .stakeNFT(0)
-      .then((val) => {
-        console.log("NFT Staked");
-      });
-
-    return { deployer, user1, nftContract, tokenContract, stakingContract };
-  }
-
-  it("Should unstake the NFT", async function () {
-    const { user1, nftContract, tokenContract, stakingContract } =
-      await loadFixture(fixture);
-
-    await time.increase(3600 * 24 + 1);
-
-    const rewardAmount = await stakingContract.calculateReward(user1.address);
-    console.log("Reward Amount: ", rewardAmount.toString());
-
-    await stakingContract.connect(user1).unStakeNFT(0);
-
-    expect(await nftContract.balanceOf(user1.address)).to.equal(1);
-    expect(await nftContract.balanceOf(stakingContract.address)).to.equal(0);
-    expect(await nftContract.ownerOf(0)).to.equal(user1.address);
-    expect(await tokenContract.balanceOf(user1.address)).to.gt(rewardAmount);
-  });
-});
-```
-
-- Run `npx hardhat test test/unstake.js` to run the script.
-
-This test is to check whether the `unStakeNFT` function is working properly or not. We are first deploying the `BuidlNFT` and `BuidlToken` contracts and then deploying the `Staking` contract. We are also minting an NFT for the user and approving the `Staking` contract to transfer the NFT on behalf of the user. Then we are calling the `stakeNFT` function of the `Staking` contract and checking if the NFT is transferred to the `Staking` contract or not. Then we are increasing the time by 1 day and calling the `unStakeNFT` function of the `Staking` contract and checking if the NFT is transferred back to the user or not.
-
-> So now you have successfully written and tested your smart contract.
-
-## --
-
-### 4. Deploying and verifying the smart contracts to the Polygon Mumbai Testnet.
-
-- Delete the `Lock.js` file from `scripts` folder and create new file named `deploy.js`.
-
-- Paste the following code.
-
-```
-const { ethers } = require("hardhat");
-
-async function main() {
-    const [deployer] = await ethers.getSigners();
-    console.log("Deploying contracts with the account:", deployer.address);
-    console.log("Account balance:", (await deployer.getBalance()).toString());
-
+  ```javascript
+  const mintNFT = async () => {
     try {
-        const NFT = await ethers.getContractFactory("BuidlNFT");
-        const nft = await NFT.deploy("BuidlNFT", "BN");
-        await nft.deployed();
-        console.log("NFT Contract Address:", nft.address);
+      const nftContract = new ethers.utils.Interface(NFTAbi.abi);
+      const data = nftContract.encodeFunctionData("safeMint", [
+        smartAccount.address,
+        "https://bafkreih73g4bdfee55w7izme3ryt6imjuh2nykdnxxpwe6eepdqrrkjcjm.ipfs.nftstorage.link/",
+      ]);
+      const tx = {
+        to: NFTAbi.address,
+        data: data,
+      };
 
-        const TOKEN = await ethers.getContractFactory("BuidlToken");
-        const token = await TOKEN.deploy("BuidlToken", "BT");
-        await token.deployed();
-        console.log("Token Contract Address:", token.address);
+      const txResponse = await smartAccount.sendGasLessTransaction({
+        transaction: tx,
+      });
+      console.log("tx hash generated", txResponse.hash);
+      const receipt = await txResponse.wait();
+      console.log("tx receipt", receipt);
 
-        const STAKING = await ethers.getContractFactory("Staking");
-        const staking = await STAKING.deploy(nft.address, token.address);
-        await staking.deployed();
-        console.log("Staking Contract Address:", staking.address);
+      window.alert("NFT Minted");
+      router.push("/");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  ```
 
-        await hre.run("verify:verify", {
-            address: nft.address,
-            constructorArguments: ["BuidlNFT", "BN"],
+  Here
+
+  - `nftContract` is the interface of the NFT contract.
+  - `data` is the encoded form of the `safeMint` function and the parameters that we want to pass to it.
+  - `tx` is the JSON fromatted object required by the Biconomy SDK.
+  - `txResponse` is the **gasless transaction** we sent using the `smartAccount` by passing the `tx` object.
+  - `receipt` is the receipt of the transaction. This will be used to check if the transaction was successful or not.
+
+- Change the returning jsx to the below given code
+
+  ```javascript
+  return (
+    <div>
+      {smartAccount?.address && (
+        <button
+          className="p-3 bg-[#ff1] text-black text-lg rounded-xl mx-[50%] min-w-[150px] my-5 hover:scale-105 font-medium"
+          onClick={mintNFT}
+        >
+          Mint NFT
+        </button>
+      )}
+    </div>
+  );
+  ```
+
+  Here
+
+  - `smartAccount?.address` is the address of the smart account.
+
+- After removing the unwanted imports and variables our `mint.jsx` file will look like this
+
+  ```javascript
+  import { useRouter } from "next/router";
+  import React from "react";
+  import NFTAbi from "@/ABIs/BuidlNFT.json";
+  import { ethers } from "ethers";
+
+  const Mint = ({ smartAccount }) => {
+    const router = useRouter();
+
+    const mintNFT = async () => {
+      try {
+        const nftContract = new ethers.utils.Interface(NFTAbi.abi);
+        const data = nftContract.encodeFunctionData("safeMint", [
+          smartAccount.address,
+          "https://bafkreih73g4bdfee55w7izme3ryt6imjuh2nykdnxxpwe6eepdqrrkjcjm.ipfs.nftstorage.link/",
+        ]);
+        const tx = {
+          to: NFTAbi.address,
+          data: data,
+        };
+
+        const txResponse = await smartAccount.sendGasLessTransaction({
+          transaction: tx,
         });
+        console.log("tx hash generated", txResponse.hash);
+        const receipt = await txResponse.wait();
+        console.log("tx receipt", receipt);
 
-        await hre.run("verify:verify", {
-            address: token.address,
-            constructorArguments: ["BuidlToken", "BT"],
-        });
+        window.alert("NFT Minted");
+        router.push("/");
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    return (
+      <div>
+        {smartAccount?.address && (
+          <button
+            className="p-3 bg-[#ff1] text-black text-lg rounded-xl mx-[50%] min-w-[150px] my-5 hover:scale-105 font-medium"
+            onClick={mintNFT}
+          >
+            Mint NFT
+          </button>
+        )}
+      </div>
+    );
+  };
 
-        await hre.run("verify:verify", {
-            address: staking.address,
-            constructorArguments: [nft.address, token.address],
-        });
+  export default Mint;
+  ```
 
-    } catch (error) {
-        console.error(error);
+### 5. Now let's make `stake` and `unstake` functions gasless
+
+- Go to `frontend/components/Cards/NFTCard.jsx`
+- Copy and paste the following code:
+
+  ```javascript
+  import React, { useEffect, useState } from "react";
+  import Image from "next/image";
+  import NFTAbi from "@/ABIs/BuidlNFT.json";
+  import StakingAbi from "@/ABIs/Staking.json";
+  import { ethers } from "ethers";
+
+  const NFTCard = ({ url, stake, tokenId, smartAccount }) => {
+    const [nft, setNft] = useState({
+      name: "",
+      image: "",
+      desc: "",
+      tokenID: tokenId,
+    });
+
+    const stakeNft = async () => {
+      const txs = [];
+      const nftContractInterface = new ethers.utils.Interface(NFTAbi.abi);
+      const stakingContractInterface = new ethers.utils.Interface(
+        StakingAbi.abi
+      );
+
+      const data1 = nftContractInterface.encodeFunctionData(
+        "setApprovalForAll",
+        [StakingAbi.address, true]
+      );
+      const tx1 = {
+        to: NFTAbi.address,
+        data: data1,
+      };
+      txs.push(tx1);
+      const data2 = stakingContractInterface.encodeFunctionData("stakeNFT", [
+        nft.tokenID,
+      ]);
+      const tx2 = {
+        to: StakingAbi.address,
+        data: data2,
+      };
+      txs.push(tx2);
+
+      const txResponse = await smartAccount.sendGaslessTransactionBatch({
+        transactions: txs,
+      });
+      console.log("tx hash generated", txResponse.hash);
+      const receipt = await txResponse.wait();
+      console.log("tx receipt", receipt);
+    };
+
+    const unStakeNft = async () => {
+      const txs = [];
+      const withdrawApproval = new ethers.utils.Interface(NFTAbi.abi);
+      const unStake = new ethers.utils.Interface(StakingAbi.abi);
+
+      const data1 = withdrawApproval.encodeFunctionData("setApprovalForAll", [
+        StakingAbi.address,
+        false,
+      ]);
+      const tx1 = {
+        to: NFTAbi.address,
+        data: data1,
+      };
+      txs.push(tx1);
+      const data2 = unStake.encodeFunctionData("unStakeNFT", [nft.tokenID]);
+      console.log(nft.tokenID);
+      const tx2 = {
+        to: StakingAbi.address,
+        data: data2,
+      };
+      txs.push(tx2);
+
+      const txResponse = await smartAccount.sendGaslessTransactionBatch({
+        transactions: txs,
+      });
+      console.log("tx hash generated", txResponse.hash);
+      const receipt = await txResponse.wait();
+      console.log("tx receipt", receipt);
+    };
+    useEffect(() => {
+      if (url) {
+        const getData = async () => {
+          try {
+            const res = await fetch(url);
+            const data = await res.json();
+
+            setNft({
+              name: data.name,
+              image: data.image,
+              desc: data.description,
+              tokenID: tokenId,
+            });
+          } catch (err) {
+            console.log(err);
+          }
+        };
+        getData();
+      }
+    }, [tokenId, url]);
+
+    return (
+      <div>
+        {stake ? (
+          <div>
+            <section className="text-center max-w-fit border px-3  rounded-md border-[#ffffff82] shadow-lg mx-2 hover:scale-105">
+              <h2 className="text-2xl my-2">{nft.name}</h2>
+              <Image src={nft.image} alt={nft.name} width={200} height={400} />
+              <h2 className="text-md text-[#ffffffbe] mt-2">{nft.desc}</h2>
+              <button
+                className="bg-[#524ffffb] px-3 py-1 my-3 rounded-md font-medium mb-3 w-[60%] text-lg hover:scale-105"
+                onClick={stakeNft}
+              >
+                Stake
+              </button>
+            </section>
+          </div>
+        ) : (
+          <div>
+            <section className="text-center max-w-fit border px-3  rounded-md border-[#ffffff82] shadow-lg hover:scale-105">
+              <h2 className="text-2xl my-2">{nft.name}</h2>
+              <Image src={nft.image} alt={nft.name} width={200} height={400} />
+              <h2 className="text-md text-[#ffffffbe] mt-2">{nft.desc}</h2>
+              <button
+                className="bg-[#ff0909] px-3 py-1 my-3 rounded-md font-medium mb-3 w-[60%] text-lg hover:scale-105"
+                onClick={unStakeNft}
+              >
+                Withdraw
+              </button>
+            </section>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  export default NFTCard;
+  ```
+
+  Now let's understand what **new** we did here.
+
+  - First we imported `ethers` from `ethers` library.
+  - Second we make one more property in `NFTCard` component called `smartAccount` which will be used to send gasless transactions.
+  - Then we modified `stakeNft` and `unStakeNft` functions to send gasless transactions.
+  - In the `stakeNft` function we first created two interfaces for `NFT` and `Staking` contracts.
+  - Then we encoded the data for `setApprovalForAll` function of `NFT` contract and `stakeNFT` function of `Staking` contract.
+  - Since there will be two transactions we created two objects `tx1` and `tx2` and pushed them into an array `txs`.
+  - Now, we used `smartAccount.sendGaslessTransactionBatch` function to send the batch of transactions.
+  - The same thing we did in `unStakeNft` function. We created two interfaces for `NFT` and `Staking` contracts. Then we encoded the data for `setApprovalForAll` function of `NFT` contract and `unStakeNFT` function of `Staking` contract. Then we created two objects `tx1` and `tx2` and pushed them into an array `txs`. Then we used `smartAccount.sendGaslessTransactionBatch` function to send the batch of transactions.
+
+---
+
+---
+
+### 6. Change the modals parameters according to our needs
+
+- Go to `frontend/components/Modal/StakedNFT.jsx` and paste the following code.
+
+  ```jsx
+  import { useState } from "react";
+  import NFTCard from "../Cards/NFTCard";
+  import NFTAbi from "@/ABIs/BuidlNFT.json";
+  import StakingAbi from "@/ABIs/Staking.json";
+  import { useContract, useProvider } from "wagmi";
+  import { ethers } from "ethers";
+
+  const StakedNft = ({ smartAccount }) => {
+    const provider = useProvider();
+    const [rewardBal, setRewardBal] = useState();
+    const [tokenId, setTokenId] = useState();
+    const [tokenURI, setTokenURI] = useState("");
+    const stakingContract = useContract({
+      address: StakingAbi.address,
+      abi: StakingAbi.abi,
+      signerOrProvider: provider,
+    });
+    const nftContract = useContract({
+      address: NFTAbi.address,
+      abi: NFTAbi.abi,
+      signerOrProvider: provider,
+    });
+
+    async function getStaked() {
+      if (smartAccount?.address) {
+        console.log("Smart Contract Wallet Address:", smartAccount?.address);
+
+        const getStakedNFTs = async () => {
+          try {
+            const tx = await stakingContract?.stakeTokenId(
+              smartAccount?.address
+            );
+            setTokenId(tx.toNumber());
+            console.log(tx.toNumber());
+            const tx2 = await nftContract?.tokenURI(tokenId);
+            setTokenURI(tx2);
+          } catch (err) {
+            console.log(err);
+          }
+        };
+        getStakedNFTs();
+      }
+      if (smartAccount?.address) {
+        const getReward = async () => {
+          try {
+            const reward = await stakingContract?.calculateReward(
+              smartAccount?.address
+            );
+            setRewardBal(ethers.utils.formatUnits(reward, 18));
+          } catch (err) {
+            console.log(err);
+          }
+        };
+        getReward();
+      }
+    }
+    return (
+      <div className="flex flex-col mx-auto text-center">
+        <button onClick={getStaked}>See your staked NFTs</button>{" "}
+        <div className="mx-auto my-7">
+          {tokenURI && rewardBal ? (
+            <NFTCard
+              url={tokenURI}
+              stake={false}
+              tokenId={tokenId}
+              smartAccount={smartAccount}
+            />
+          ) : (
+            <section className="border p-5 rounded-lg shadow-lg">
+              <h1 className="my-5 text-lg">No NFTs Staked !</h1>
+            </section>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  export default StakedNft;
+  ```
+
+  Here
+
+  - We created a new prop called `smartAccount` which will be used to fetch get the address for fetching the staked NFTs.
+
+- Go to `frontend/components/Modal/UnStakedNFT.jsx` and paste the following code:
+
+  ```jsx
+  import React, { useState } from "react";
+  import NFTAbi from "@/ABIs/BuidlNFT.json";
+
+  import NFTCard from "../Cards/NFTCard";
+  import { useContract, useSigner } from "wagmi";
+
+  const UnstakedNft = ({ smartAccount }) => {
+    const { data: signer } = useSigner();
+    const [nfts, setNfts] = useState([]);
+    const nftContract = useContract({
+      address: NFTAbi.address,
+      abi: NFTAbi.abi,
+      signerOrProvider: signer,
+    });
+
+    async function getNfts() {
+      if (smartAccount?.address) {
+        const getNFTs = async () => {
+          try {
+            const tx1 = await nftContract?.balanceOf(smartAccount?.address);
+            const index = tx1.toNumber();
+
+            const txss = await nftContract?.tokenOfOwnerByIndex(
+              smartAccount?.address,
+              0
+            );
+            for (let i = 0; i < index; i++) {
+              const tx = await nftContract?.tokenOfOwnerByIndex(
+                smartAccount?.address,
+                i
+              );
+              const tx2 = await nftContract?.tokenURI(tx.toNumber());
+
+              setNfts([{ tokenId: tx.toNumber(), url: tx2 }]);
+            }
+            console.log(nfts);
+          } catch (err) {
+            console.log(err);
+          }
+        };
+        getNFTs();
+      }
     }
 
-}
+    return (
+      <div className="flex flex-col mx-auto text-center">
+        <button onClick={getNfts}>See Your NFTS</button>
 
-main().catch((error) => {
-    console.error(error);
-    process.exitCode = 1;
-});
-```
+        {nfts && console.log(nfts)}
+        <h2 className="text-2xl">Your NFTs</h2>
+        <div className="flex mx-auto my-7">
+          {nfts.map((nft, id) => (
+            <NFTCard
+              key={id}
+              url={nft.url}
+              stake={true}
+              tokenId={nft.tokenId}
+              smartAccount={smartAccount}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  };
 
-- Run `npx hardhat run scripts/deploy.js --network mumbai` to deploy and verify the contract on the Mumbai Testnet.
+  export default UnstakedNft;
+  ```
 
-Through this script we are deploying the `BuidlNFT`, `BuidlToken` and `Staking` contracts and verifying them on the Mumbai Testnet. We are using `ethers` to interact with the smart contracts and `hardhat` to deploy and verify the contracts.
+  Here
 
-> So now you have successfully deployed and verified the smart contracts on the Mumbai Testnet.
+  - We created a new prop called `smartAccount` which will be used to fetch get the address for fetching the NFTs left to stake.
+
+- Go to `frontend/components/Modal/TokenBal.jsx` and paste the following code:
+
+  ```jsx
+  import { useEffect, useState } from "react";
+  import TokenAbi from "@/ABIs/BuidlToken.json";
+  import StakingAbi from "@/ABIs/Staking.json";
+  import { useContract, useProvider } from "wagmi";
+  import { ethers } from "ethers";
+
+  const TokenBal = ({ smartAccount }) => {
+    const provider = useProvider();
+    const [tokenBal, setTokenBal] = useState("0");
+    const [rewardBal, setRewardBal] = useState("0");
+    const tokenContract = useContract({
+      address: TokenAbi.address,
+      abi: TokenAbi.abi,
+      signerOrProvider: provider,
+    });
+    const stakingContract = useContract({
+      address: StakingAbi.address,
+      abi: StakingAbi.abi,
+      signerOrProvider: provider,
+    });
+
+    useEffect(() => {
+      if (smartAccount?.address && stakingContract && tokenContract) {
+        const getReward = async () => {
+          try {
+            const reward = await stakingContract?.calculateReward(
+              smartAccount?.address
+            );
+            setRewardBal(ethers.utils.formatUnits(reward, 18));
+          } catch (err) {
+            console.log(err);
+          }
+        };
+        const getBalance = async () => {
+          try {
+            const tokenBalance = await tokenContract?.balanceOf(
+              smartAccount?.address
+            );
+
+            setTokenBal(ethers.utils.formatEther(tokenBalance));
+          } catch (err) {
+            console.log(err);
+          }
+        };
+        getReward();
+        getBalance();
+      }
+    }, [smartAccount?.address, stakingContract, tokenContract]);
+
+    return (
+      <div className="flex flex-col text-center justify-center ">
+        <h2 className="mt-5 text-2xl">Your Tokens</h2>
+        <div className="flex mx-auto my-5">
+          <section className="border p-5 rounded-lg m-2">
+            <h2>Rewards</h2>
+            {rewardBal + " BT"}
+          </section>
+          <section className="border p-5 rounded-lg m-2">
+            <h2>Balance</h2>
+            {tokenBal + " BT"}
+          </section>
+        </div>
+      </div>
+    );
+  };
+
+  export default TokenBal;
+  ```
+
+  Here
+
+  - We created a new prop called `smartAccount` which will be used to fetch get the address for fetching the token balance and rewards.
+
+---
+
+---
+
+### 7. Change the components in `frontend/pages/index.jsx`
+
+- Go to `frontend/pages/index.jsx` and paste the following code:
+
+  ```jsx
+  import Head from "next/head";
+  import { useAccount } from "wagmi";
+  import Main from "@/components/main";
+
+  export default function Home() {
+    const { address } = useAccount();
+
+    return (
+      <>
+        <Head>
+          <title>My staking dapp</title>
+          <meta name="description" content="Generated by create next app" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+        <main>
+          {address ? (
+            <div>
+              <Main></Main>
+            </div>
+          ) : (
+            <div className="flex justify-center">
+              <section className="px-5 border rounded-lg my-20 shadow-lg bg-[#0000009d]">
+                <h2 className="text-2xl my-10">
+                  Connect wallet to get started !!
+                </h2>
+              </section>
+            </div>
+          )}
+        </main>
+      </>
+    );
+  }
+  ```
+
+  Here
+
+  - We imported the `Main` component which we created in the previous step.
+  - `Main` is used in placed of all other components.
+
+---
+
+---
+
+### 8. Last thing is to change the ABIs in `frontend/ABIs` folder
+
+- Paste the commands in your terminal (on frontend directory)
+  - `cd ..`
+  - `cd backend`
+  - `yarn install`
+  - `npx hardhat compile`
+- Go to `frontend/ABIs/BuidlNFT.json`
+- Change the `address` to the address of the deployed NFT contract.
+- Then change the `abi` to the abi of the compiled NFT contract which you can get from `backend/artifacts/contracts/BuidlNFT.sol/BuidlNFT.json` file.
+- Go to `frontend/ABIs/BuidlToken.json`
+- Change the `address` to the address of the deployed Token contract.
+- Then change the `abi` to the abi of the compiled Token contract which you can get from `backend/artifacts/contracts/BuidlToken.sol/BuidlToken.json` file.
+- Go to `frontend/ABIs/Staking.json`
+- Change the `address` to the address of the deployed Staking contract.
+- Then change the `abi` to the abi of the compiled Staking contract which you can get from `backend/artifacts/contracts/BuidlNFT.sol/Staking.json` file.
+
+---
+
+---
+
+# **Congrats🎉 on converting your Staking dApp Gasless**
+
+If you have any doubts,
+
+<p align="center">
+<br>
+👉👉👉👉👉👉👉👉👉 <a href="https://t.me/+cUyVYxFCxP84N2Q1"><img alt="Telegram Group Link" src="https://img.shields.io/badge/Telegram-1DA1F2?style=for-the-badge&logo=telegram&logoColor=white"/><a> 👈👈👈👈👈👈👈👈👈
+
+</p>
+
+---
+
+---
+
+---
