@@ -12,17 +12,18 @@ const NFTCard = ({ url, stake, tokenId }) => {
     tokenID: tokenId,
   });
 
-  const provider = useProvider();
+  const {data: signer} = useSigner();
+  const {address} = useAccount();
 
   const stakingContract = useContract({
     address: StakingAbi.address,
     abi: StakingAbi.abi,
-    signerOrProvider: provider,
+    signerOrProvider: signer,
   });
   const nftContract = useContract({
     address: NFTAbi.address,
     abi: NFTAbi.abi,
-    signerOrProvider: provider,
+    signerOrProvider: signer,
   });
 
   const getData = async () => {
@@ -84,7 +85,7 @@ const NFTCard = ({ url, stake, tokenId }) => {
       try {
         const res = await fetch(url);
         const data = await res.json();
-
+        console.log(data);
         setNft({
           name: data.name,
           image: data.image,
