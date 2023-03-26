@@ -137,11 +137,10 @@ Let's BUIDL!!!
 
 - Now define our `useState` function.
 
-      ```javascript
-
-        useEffect(() => {
-        if (signer) {
-        async function setupSmartAccount() {
+  ```javascript
+  useEffect(() => {
+    if (signer) {
+      async function setupSmartAccount() {
         setScwAddress("");
         setScwLoading(true);
 
@@ -165,9 +164,10 @@ Let's BUIDL!!!
       }
       if (!!signer.provider && !!address) {
         setupSmartAccount();
-      }}
-      }, [address, signer]);
-      ```
+      }
+    }
+  }, [address, signer]);
+  ```
 
   Here
 
@@ -226,7 +226,7 @@ Let's BUIDL!!!
         data: data,
       };
 
-      const txResponse = await smartAccount.sendGasLessTransaction({
+      const txResponse = await smartAccount.sendGaslessTransaction({
         transaction: tx,
       });
       console.log("tx hash generated", txResponse.hash);
@@ -293,7 +293,7 @@ Let's BUIDL!!!
           data: data,
         };
 
-        const txResponse = await smartAccount.sendGasLessTransaction({
+        const txResponse = await smartAccount.sendGaslessTransaction({
           transaction: tx,
         });
         console.log("tx hash generated", txResponse.hash);
