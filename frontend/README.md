@@ -336,12 +336,12 @@ return(
  const stakingContract = useContract({
     address: StakingAbi.address,
     abi: StakingAbi.abi,
-    signerOrProvider: provider,
+    signerOrProvider: signer,
   });
   const nftContract = useContract({
     address: NFTAbi.address,
     abi: NFTAbi.abi,
-    signerOrProvider: provider,
+    signerOrProvider: signer,
   });
 ```
 - To fetch NFT metadata 
