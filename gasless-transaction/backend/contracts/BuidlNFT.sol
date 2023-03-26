@@ -40,7 +40,7 @@ contract BuidlNFT is ERC721, ERC721URIStorage, ERC721Enumerable {
     /// Function to mint the NFT
     /// @param to Address of the receiver
     /// @param uri Token URI of the NFT
-    function safeMint(address to, string memory uri) external onlyOwner {
+    function safeMint(address to, string memory uri) external {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
