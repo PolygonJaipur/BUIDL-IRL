@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import React from "react";
 import NFTAbi from "@/ABIs/BuidlNFT.json";
+import { ethers } from "ethers";
 
 const Mint = ({ smartAccount }) => {
   const router = useRouter();
@@ -17,7 +18,7 @@ const Mint = ({ smartAccount }) => {
         data: data,
       };
 
-      const txResponse = await smartAccount.sendGasLessTransaction({
+      const txResponse = await smartAccount.sendGaslessTransaction({
         transaction: tx,
       });
       console.log("tx hash generated", txResponse.hash);
