@@ -12,8 +12,8 @@ const NFTCard = ({ url, stake, tokenId }) => {
     tokenID: tokenId,
   });
 
-  const {data: signer} = useSigner();
-  const {address} = useAccount();
+  const { address } = useAccount();
+  const { data: signer } = useSigner();
 
   const stakingContract = useContract({
     address: StakingAbi.address,
@@ -25,22 +25,6 @@ const NFTCard = ({ url, stake, tokenId }) => {
     abi: NFTAbi.abi,
     signerOrProvider: signer,
   });
-
-  const getData = async () => {
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-
-      setNft({
-        name: data.name,
-        image: data.image,
-        desc: data.description,
-        tokenID: tokenId,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   const stakeNft = async () => {
     try {
@@ -85,7 +69,7 @@ const NFTCard = ({ url, stake, tokenId }) => {
       try {
         const res = await fetch(url);
         const data = await res.json();
-        console.log(data);
+
         setNft({
           name: data.name,
           image: data.image,
@@ -96,18 +80,28 @@ const NFTCard = ({ url, stake, tokenId }) => {
         console.log(err);
       }
     };
+    getData();
   }, [tokenId, url]);
 
   return (
     <div>
       {stake ? (
         <div>
-          <section className="text-center max-w-fit border px-3  rounded-md border-[#ffffff82] shadow-lg mx-2 hover:scale-105">
-            <h2 className="text-2xl my-2">{nft.name}</h2>
-            <Image src={nft.image} alt={nft.name} width={200} height={400} />
-            <h2 className="text-md text-[#ffffffbe] mt-2">{nft.desc}</h2>
+          <section className="text-center mx-auto gap-2 max-w-fit border px-3  rounded-md border-[#ffffff82] shadow-lg mx-2 hover:scale-105">
+            <h2 className="text-2xl mx-auto gap-2 my-2">{nft.name}</h2>
+            <Image
+              src={
+                nft.image
+                  ? nft.image
+                  : "https://www.chanchao.com.tw/VietnamPrintPack/images/default.jpg"
+              }
+              alt={nft.name}
+              width={200}
+              height={400}
+            />
+            <h2 className="text-md mx-auto text-[#ffffffbe] mt-2">{nft.desc}</h2>
             <button
-              className="bg-[#524ffffb] px-3 py-1 my-3 rounded-md font-medium mb-3 w-[60%] text-lg hover:scale-105"
+              className="bg-[#524ffffb] mx-auto px-3 py-1 my-3 rounded-md font-medium mb-3 w-[60%] text-lg hover:scale-105"
               onClick={stakeNft}
             >
               Stake
@@ -116,12 +110,21 @@ const NFTCard = ({ url, stake, tokenId }) => {
         </div>
       ) : (
         <div>
-          <section className="text-center max-w-fit border px-3  rounded-md border-[#ffffff82] shadow-lg hover:scale-105">
-            <h2 className="text-2xl my-2">{nft.name}</h2>
-            <Image src={nft.image} alt={nft.name} width={200} height={400} />
-            <h2 className="text-md text-[#ffffffbe] mt-2">{nft.desc}</h2>
+          <section className="text-center mx-auto max-w-fit border px-3  rounded-md border-[#ffffff82] shadow-lg hover:scale-105">
+            <h2 className="text-2xl mx-auto my-2">{nft.name}</h2>
+            <Image
+              src={
+                nft.image
+                  ? nft.image
+                  : "https://www.chanchao.com.tw/VietnamPrintPack/images/default.jpg"
+              }
+              alt={nft.name}
+              width={200}
+              height={400}
+            />
+            <h2 className="text-md mx-auto text-[#ffffffbe] mt-2">{nft.desc}</h2>
             <button
-              className="bg-[#ff0909] px-3 py-1 my-3 rounded-md font-medium mb-3 w-[60%] text-lg hover:scale-105"
+              className="bg-[#ff0909] px-3 py-1 mx-auto my-3 rounded-md font-medium mb-3 w-[60%] text-lg hover:scale-105"
               onClick={unStakeNft}
             >
               Withdraw
