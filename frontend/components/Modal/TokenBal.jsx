@@ -51,14 +51,14 @@ useEffect(() => {
     const getBalance = async () => {
       try {
         const tokenBalance = await tokenContract?.balanceOf(address);
-
         setTokenBal(ethers.utils.formatEther(tokenBalance));
       } catch (err) {
         console.log(err);
       }
+      
+      getReward();
+      getBalance();
     };
-    getReward();
-    getBalance();
   }
 }, [address, stakingContract, tokenContract]);
 

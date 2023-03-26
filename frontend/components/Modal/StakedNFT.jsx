@@ -11,6 +11,7 @@ const StakedNft = () => {
   const [rewardBal, setRewardBal] = useState();
   const [tokenId, setTokenId] = useState();
   const [tokenURI, setTokenURI] = useState("");
+
   const stakingContract = useContract({  
     address: StakingAbi.address,
     abi: StakingAbi.abi,
@@ -21,6 +22,7 @@ const StakedNft = () => {
     abi: NFTAbi.abi,
     signerOrProvider: provider,
   });
+
   const getStakedNFTs = async () => {
     try {
       const tx = await stakingContract?.stakeTokenId(address);
@@ -35,11 +37,28 @@ const StakedNft = () => {
 
   useEffect(() => {
     if (address) {
-      const getStakedNFTs = async () => {};
+      const getStakedNFTs = async () => {
+        try {
+          const tx = await stakingContract?.stakeTokenId(address);
+          setTokenId(tx.toNumber());
+          console.log(tx.toNumber());
+          const tx2 = await nftContract?.tokenURI(tokenId);
+          setTokenURI(tx2);
+        } catch (err) {
+          console.log(err);
+        }
+      };
       getStakedNFTs();
     }
     if (address) {
-      const getReward = async () => {};
+      const getReward = async () => {
+        try {
+          const reward = await stakingContract?.calculateReward(address);
+          setRewardBal(ethers.utils.formatUnits(reward, 18));
+        } catch (err) {
+          console.log(err);
+        }
+      };
       getReward();
     }
   }, [tokenId, address, stakingContract, nftContract]);

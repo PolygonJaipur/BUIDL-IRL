@@ -29,7 +29,19 @@ const getNFTs = async () => {
 
   useEffect(() => {
     if (address) {
-      const getNFTs = async () => {};
+      const getNFTs = async () => {
+        try {
+          const tx1 = await nftContract?.balanceOf(address);
+          const index = tx1.toNumber();
+          for (let i = 0; i < index; i++) {
+            const tx = await nftContract?.tokenOfOwnerByIndex(address, i);
+            const tx2 = await nftContract?.tokenURI(tx.toNumber());
+            setNfts((prev) => [...prev, { tokenId: tx.toNumber(), url: tx2 }]);
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      };
       getNFTs();
     }
   }, [address, nftContract]);

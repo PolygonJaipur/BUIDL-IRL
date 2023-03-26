@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import NFTAbi from "@/ABIs/BuidlNFT.json";
 import StakingAbi from "@/ABIs/Staking.json";
-import { useAccount, useContract, useSigner } from "wagmi";
+import { useAccount, useContract, useSigner, useProvider } from "wagmi";
 
 const NFTCard = ({ url, stake, tokenId }) => {
   const [nft, setNft] = useState({
@@ -11,6 +11,8 @@ const NFTCard = ({ url, stake, tokenId }) => {
     desc: "",
     tokenID: tokenId,
   });
+
+  const provider = useProvider();
 
   const stakingContract = useContract({
     address: StakingAbi.address,
@@ -77,7 +79,23 @@ const NFTCard = ({ url, stake, tokenId }) => {
     }
   };
 
-  useEffect(() => {}, [tokenId, url]);
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        setNft({
+          name: data.name,
+          image: data.image,
+          desc: data.description,
+          tokenID: tokenId,
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    };
+  }, [tokenId, url]);
 
   return (
     <div>

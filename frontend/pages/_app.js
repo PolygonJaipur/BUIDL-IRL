@@ -36,7 +36,7 @@ export default function App({ Component, pageProps }) {
           <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
         </WagmiConfig>
       ) : (
-        <div className="flex justify-center text-2xl my-[50%]">Loading</div>
+        <div className="flex justify-center text-2xl my-[50%]">Loading....</div>
       )}
     </>
   );
