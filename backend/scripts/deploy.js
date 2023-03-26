@@ -10,17 +10,31 @@ async function main() {
     const nft = await NFT.deploy("BuidlNFT", "BN");
     await nft.deployed();
     console.log("Contract address:", nft.address);
-  } catch (error) {
-    console.error(error);
-  }
 
+    const TOKEN = await ethers.getContractFactory("BUIDLToken");
+    const token = await TOKEN.deploy("BUIDLToken", "BT");
+    await token.deployed();
+    console.log("Contract address:", token.address);
+
+    const STAKING = await ethers.getContractFactory("Staking");;
+    const staking = await STAKING.deploy(nft.address, token.address);
+    await staking.deployed();
+    console.log("Contract address:", staking.address);
+  
   console.log("Sleeping.....");
-  await sleep(40000);
+  await sleep(60000);
 
-  try {
     await hre.run("verify:verify", {
       address: nft.address,
       constructorArguments: ["BuidlNFT", "BN"],
+    });
+    await hre.run("verify:verify", {
+      address: token.address,
+      constructorArguments: ["BUIDLToken", "BT"],
+    });
+    await hre.run("verify:verify", {
+      address: staking.address,
+      constructorArguments: [nft.address, token.address],
     });
   } catch (error) {
     console.error(error);
