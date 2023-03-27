@@ -1,85 +1,26 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.18;
+pragma solidity ^0.8.18;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-/// @title BuidlNFT Contract
+/// @title BuidlToken Contract
 /// @author Megabyte
-/// @notice This contract is used to mint NFTs and transfer them.
-contract BuidlNFT is ERC721, ERC721URIStorage, ERC721Enumerable {
-    using Counters for Counters.Counter;
-
-    /// @dev Counter to keep track of the token Id
-    Counters.Counter private _tokenIdCounter;
-
-    /// @dev Address of the owner
+/// @notice This contract is used to mint tokens.
+contract BuidlToken is ERC20 {
+    /// @dev Address of the owner.
     address owner;
 
-    /// Constructor to initialize the ERC721 Token
-    /// @param name Name of the ERC721 Token
-    /// @param symbol Symbol of the ERC721 Token
-    constructor(string memory name, string memory symbol) ERC721(name, symbol) {
+    /// Constructor to initialize the ERC20 Token
+    /// @param name token name
+    /// @param symbol token symbol
+    constructor(string memory name, string memory symbol) ERC20(name, symbol) {
         owner = msg.sender;
     }
 
-    /// Modifier to check if the caller is the owner
-    modifier onlyOwner() {
-        require(msg.sender == owner, "ERR:NO");
-        _;
-    }
-
-    /// Function to get the Token URI of the NFT
-    /// @param tokenId Token Id of the NFT
-    function getTokenURI(uint256 tokenId) public view returns (string memory) {
-        return tokenURI(tokenId);
-    }
-
-    /// Function to mint the NFT
-    /// @param to Address of the receiver
-    /// @param uri Token URI of the NFT
-    function safeMint(address to, string memory uri) external {
-        uint256 tokenId = _tokenIdCounter.current();
-        _tokenIdCounter.increment();
-        _safeMint(to, tokenId);
-        _setTokenURI(tokenId, uri);
-    }
-
-    /// Function to trasfer the NFT
-    /// @param to Receiver address
-    /// @param tokenId Token Id of the NFT
-    function transfer(address to, uint256 tokenId) external {
-        safeTransferFrom(msg.sender, to, tokenId);
-    }
-
-    // The following functions are overrides required by Solidity.
-
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 tokenId,
-        uint256 batchSize
-    ) internal override(ERC721, ERC721Enumerable) {
-        super._beforeTokenTransfer(from, to, tokenId, batchSize);
-    }
-
-    function _burn(
-        uint256 tokenId
-    ) internal override(ERC721, ERC721URIStorage) {
-        super._burn(tokenId);
-    }
-
-    function tokenURI(
-        uint256 tokenId
-    ) public view override(ERC721, ERC721URIStorage) returns (string memory) {
-        return super.tokenURI(tokenId);
-    }
-
-    function supportsInterface(
-        bytes4 interfaceId
-    ) public view override(ERC721, ERC721Enumerable) returns (bool) {
-        return super.supportsInterface(interfaceId);
+    /// Function to mint the token for a particular address.
+    /// @param to Address of the receiver.
+    /// @param amount Amount of token to be minted.
+    function mintToken(address to, uint256 amount) external {
+        _mint(to, amount);
     }
 }
