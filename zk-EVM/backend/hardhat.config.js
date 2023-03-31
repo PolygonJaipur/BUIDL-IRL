@@ -12,6 +12,10 @@ module.exports = {
       url: ALCHEMY_HTTP_URL,
       accounts: [PRIVATE_KEY],
     },
+    zkEVM: {
+      url: "https://rpc.public.zkevm-test.net",
+      accounts: [PRIVATE_KEY],
+    },
   },
   etherscan: {
     apiKey: {
