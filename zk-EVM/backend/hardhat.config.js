@@ -1,17 +1,12 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("dotenv").config();
 
-const ALCHEMY_HTTP_URL = process.env.ALCHEMY_HTTP_URL;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const POLYGON_SCAN_KEY = process.env.POLYGON_SCAN_KEY;
+const zkEVM_POLYGON_SCAN_KEY = process.env.POLYGON_SCAN_KEY;
 
 module.exports = {
   solidity: "0.8.18",
   networks: {
-    mumbai: {
-      url: ALCHEMY_HTTP_URL,
-      accounts: [PRIVATE_KEY],
-    },
     zkEVM: {
       url: "https://rpc.public.zkevm-test.net",
       accounts: [PRIVATE_KEY],
@@ -19,7 +14,17 @@ module.exports = {
   },
   etherscan: {
     apiKey: {
-      polygonMumbai: POLYGON_SCAN_KEY,
+      zkEVM: zkEVM_POLYGON_SCAN_KEY,
     },
+    customChains: [
+      {
+        network: "zkEVM",
+        chainId: 1442,
+        urls: {
+          apiURL: "https://api-testnet-zkevm.polygonscan.com/api",
+          browserURL: "https://testnet-zkevm.polygonscan.com/"
+        }
+      }
+    ]
   },
 };
