@@ -22,20 +22,20 @@ async function main() {
     console.log("Contract address:", staking.address);
   
   console.log("Sleeping.....");
-  await sleep(60000);
+  // await sleep(60000);
 
-    await hre.run("verify:verify", {
-      address: nft.address,
-      constructorArguments: ["BuidlNFT", "BN"],
-    });
-    await hre.run("verify:verify", {
-      address: token.address,
-      constructorArguments: ["BUIDLToken", "BT"],
-    });
-    await hre.run("verify:verify", {
-      address: staking.address,
-      constructorArguments: [nft.address, token.address],
-    });
+  //   await hre.run("verify:verify", {
+  //     address: nft.address,
+  //     constructorArguments: ["BuidlNFT", "BN"],
+  //   });
+  //   await hre.run("verify:verify", {
+  //     address: token.address,
+  //     constructorArguments: ["BUIDLToken", "BT"],
+  //   });
+  //   await hre.run("verify:verify", {
+  //     address: staking.address,
+  //     constructorArguments: [nft.address, token.address],
+  //   });
   } catch (error) {
     console.error(error);
   }
