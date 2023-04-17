@@ -15,6 +15,10 @@ module.exports = {
     zkEVM : {
       url: "https://rpc.public.zkevm-test.net",
       accounts: [PRIVATE_KEY],
+    },
+    hermes : {
+      url: "https://rpc-test.h4s.dojima.network/",
+      accounts: [PRIVATE_KEY],
     }
   },
   etherscan: {
